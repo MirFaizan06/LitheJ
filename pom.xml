@@ -504,6 +504,15 @@
       </properties>
       <build>
         <plugins>
+          <!-- maven-gpg-plugin is only pre-configured in pluginManagement above
+               (bound to the verify phase, controlled by the gpg.skip property);
+               it must also be listed here to actually be attached to the build.
+               Without this, gpg.skip=false has no effect and Maven Central
+               rejects the deployment for every artifact missing a signature. -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+          </plugin>
           <plugin>
             <groupId>org.sonatype.central</groupId>
             <artifactId>central-publishing-maven-plugin</artifactId>
