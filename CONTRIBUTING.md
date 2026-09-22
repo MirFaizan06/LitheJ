@@ -166,11 +166,14 @@ For future reference, or if the token needs rotating:
    `central-publishing-maven-plugin`'s `publishingServerId` requires — plain env vars
    alone are not sufficient for that plugin, despite some older blog posts suggesting
    otherwise. See the comment in `release.yml` next to the `setup-java` step.
-5. The release profile uses `autoPublish=false` deliberately: a release upload lands
-   in the Central Portal as a pending deployment that a maintainer reviews and
-   manually clicks "Publish" on, rather than going live automatically. Flip it to
-   `true` in the root `pom.xml`'s `release` profile once you're confident in the
-   pipeline and want fully unattended releases.
+5. The release profile uses `autoPublish=true`: a tagged release, once it passes the
+   full test/quality suite and is correctly signed, goes live on Maven Central
+   automatically with no manual "Publish" click. This was `false` for the very first
+   release (v1.0.0) specifically to allow a manual sanity check before anything public
+   happened; it was switched to `true` after that first release succeeded end-to-end.
+   If you want the manual-review step back (e.g. after a long gap between releases, or
+   after a pipeline change you haven't proven yet), set it back to `false` for one
+   release and flip it back afterward.
 
 ### One-time setup: artifact signing (GPG)
 
