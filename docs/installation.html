@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installation · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a href="index.html">Getting Started</a></li>
+      <li><a class="active" href="installation.html">Installation</a></li>
+      <li><a href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a href="console.html">Console</a></li>
+      <li><a href="files.html">Files &amp; Directories</a></li>
+      <li><a href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a href="text.html">Text</a></li>
+      <li><a href="numbers.html">Numbers</a></li>
+      <li><a href="validation.html">Validation</a></li>
+      <li><a href="result.html">Result &amp; Error Handling</a></li>
+      <li><a href="time.html">Date &amp; Time</a></li>
+      <li><a href="http.html">HTTP</a></li>
+      <li><a href="async.html">Async</a></li>
+      <li><a href="config.html">Configuration &amp; Resources</a></li>
+      <li><a href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Installation</h1>
+  <p class="lede">Add one dependency and start calling static methods &mdash; no
+  installer, code generation, or framework bootstrapping.</p>
+
+  <p>Coordinates below use the placeholder groupId
+  <code>io.github.YOUR_GITHUB_USERNAME</code> &mdash; replace it with the actual
+  published groupId (see the project's <code>CONTRIBUTING.md</code>).</p>
+
+  <h2>Maven</h2>
+  <p>Depend on just the module(s) you need:</p>
+  <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;io.github.YOUR_GITHUB_USERNAME&lt;/groupId&gt;
+    &lt;artifactId&gt;lithej-core&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+  <p>...or pull in every module with the aggregate artifact:</p>
+  <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;io.github.YOUR_GITHUB_USERNAME&lt;/groupId&gt;
+    &lt;artifactId&gt;lithej&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+  <h2>Gradle (Kotlin DSL)</h2>
+  <pre><code>implementation("io.github.YOUR_GITHUB_USERNAME:lithej-core:1.0.0")
+// or
+implementation("io.github.YOUR_GITHUB_USERNAME:lithej:1.0.0")</code></pre>
+
+  <h2>Gradle (Groovy DSL)</h2>
+  <pre><code>implementation 'io.github.YOUR_GITHUB_USERNAME:lithej-core:1.0.0'</code></pre>
+
+  <h2>JitPack (fallback)</h2>
+  <p>If you'd rather not wait on a Maven Central publish, every tagged release is
+  also installable via <a href="https://jitpack.io">JitPack</a>:</p>
+  <pre><code>&lt;repositories&gt;
+    &lt;repository&gt;
+        &lt;id&gt;jitpack.io&lt;/id&gt;
+        &lt;url&gt;https://jitpack.io&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.github.YOUR_GITHUB_USERNAME&lt;/groupId&gt;
+    &lt;artifactId&gt;lithej&lt;/artifactId&gt;
+    &lt;version&gt;v1.0.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+  <h2>Module reference</h2>
+  <table>
+    <tr><th>Artifact</th><th>Depends on</th><th>Contents</th></tr>
+    <tr><td><code>lithej-core</code></td><td>&mdash;</td><td>ObjectsX, Validate, Result, Numbers, Text, Console/ConsoleIO</td></tr>
+    <tr><td><code>lithej-collections</code></td><td>core</td><td>Lists, Maps, Sets, Iterables</td></tr>
+    <tr><td><code>lithej-io</code></td><td>core</td><td>FileIO, Directories, Resources, ProcessX</td></tr>
+    <tr><td><code>lithej-time</code></td><td>core</td><td>Times</td></tr>
+    <tr><td><code>lithej-net</code></td><td>core</td><td>Http, HttpOptions, HttpResponse</td></tr>
+    <tr><td><code>lithej-async</code></td><td>core</td><td>Async</td></tr>
+    <tr><td><code>lithej-config</code></td><td>core, io</td><td>Env, PropertiesX, Config</td></tr>
+    <tr><td><code>lithej</code></td><td>all of the above</td><td>Aggregate convenience artifact</td></tr>
+  </table>
+
+  <p><a href="index.html">&larr; Getting Started</a> &middot;
+     <a href="quick-start.html">Quick Start &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

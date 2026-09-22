@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Numbers · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a class="active" href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Numbers</h1>
+  <p class="lede">Safe parsing, clamping, and rounding, from
+  <code>lithej.core.Numbers</code>.</p>
+
+  <h2>Parsing</h2>
+  <p>Two families: <code>parseX</code> matches the JDK's own <code>parseX</code>
+  (throws <code>NumberFormatException</code>), but trims whitespace first.
+  <code>tryX</code> never throws, returning an empty <code>OptionalX</code>
+  instead.</p>
+  <pre><code>Numbers.parseInt(" 42 ");        // 42
+Numbers.tryInt("not a number");  // OptionalInt.empty()
+Numbers.tryInt("42");            // OptionalInt.of(42)
+Numbers.tryLong(s);
+Numbers.tryDouble(s);
+Numbers.isInteger("42");         // true</code></pre>
+
+  <h2>Clamping &amp; ranges</h2>
+  <pre><code>Numbers.clamp(15, 0, 10);      // 10
+Numbers.clamp(-5, 0, 10);      // 0
+Numbers.inRange(5, 0, 10);     // true</code></pre>
+
+  <h2>Rounding</h2>
+  <p>Uses <code>BigDecimal</code> internally to avoid binary-floating-point
+  surprises (e.g. <code>2.675</code> incorrectly rounding down to <code>2.67</code>
+  under naive <code>double</code> math):</p>
+  <pre><code>Numbers.round(2.675, 2);   // 2.68
+Numbers.round(1.005, 2);   // 1.01</code></pre>
+
+  <p><a href="text.html">&larr; Text</a> &middot;
+     <a href="validation.html">Validation &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

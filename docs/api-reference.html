@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Reference · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a class="active" href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>API Reference</h1>
+  <p class="lede">This site covers usage guides with copy-paste examples. For the
+  complete generated Javadoc &mdash; every public class, method, parameter, return
+  value, and exception &mdash; see the per-module Javadoc jars published with each
+  release.</p>
+
+  <h2>Generated Javadoc</h2>
+  <p>Each module publishes a Javadoc jar alongside its regular and sources jars
+  (attached to every <a href="https://github.com/YOUR_GITHUB_USERNAME/lithej/releases">GitHub Release</a>,
+  and to the corresponding Maven Central / JitPack artifact). Most IDEs (IntelliJ
+  IDEA, Eclipse, VS Code with the Java extension) download and show this Javadoc
+  automatically once you add the dependency &mdash; hover or invoke "Quick
+  Documentation" on any LitheJ class or method.</p>
+
+  <p>To generate it locally from a clone of the repository:</p>
+  <pre><code>./mvnw javadoc:javadoc -pl lithej-core
+# output in lithej-core/target/site/apidocs/index.html</code></pre>
+
+  <h2>Module &rarr; package map</h2>
+  <table>
+    <tr><th>Module</th><th>Package(s)</th><th>Guide</th></tr>
+    <tr><td><code>lithej-core</code></td><td><code>lithej.core</code></td><td><a href="validation.html">Validation</a>, <a href="result.html">Result</a>, <a href="numbers.html">Numbers</a></td></tr>
+    <tr><td></td><td><code>lithej.text</code></td><td><a href="text.html">Text</a></td></tr>
+    <tr><td></td><td><code>lithej.console</code></td><td><a href="console.html">Console</a></td></tr>
+    <tr><td><code>lithej-collections</code></td><td><code>lithej.collections</code></td><td><a href="collections.html">Collections, Maps &amp; Sets</a></td></tr>
+    <tr><td><code>lithej-io</code></td><td><code>lithej.io</code></td><td><a href="files.html">Files &amp; Directories</a>, <a href="config.html#resources">Resources</a></td></tr>
+    <tr><td></td><td><code>lithej.process</code></td><td><a href="process.html">Processes</a></td></tr>
+    <tr><td><code>lithej-time</code></td><td><code>lithej.time</code></td><td><a href="time.html">Date &amp; Time</a></td></tr>
+    <tr><td><code>lithej-net</code></td><td><code>lithej.net</code></td><td><a href="http.html">HTTP</a></td></tr>
+    <tr><td><code>lithej-async</code></td><td><code>lithej.async</code></td><td><a href="async.html">Async</a></td></tr>
+    <tr><td><code>lithej-config</code></td><td><code>lithej.config</code></td><td><a href="config.html">Configuration &amp; Resources</a></td></tr>
+  </table>
+
+  <p><a href="migration.html">&larr; Migration &amp; FAQ</a> &middot;
+     <a href="index.html">Back to Getting Started</a></p>
+</main>
+</div>
+</body>
+</html>

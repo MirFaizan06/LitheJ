@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTTP · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a class="active" href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>HTTP</h1>
+  <p class="lede">A thin wrapper around <code>java.net.http.HttpClient</code> for the
+  common case, from <code>lithej-net</code>. Not a competing networking framework
+  &mdash; no retries, cookie jars, or auth flows built in.</p>
+
+  <h2>Requests</h2>
+  <pre><code>HttpResponse get = Http.get(url);
+HttpResponse post = Http.post(url, body);
+HttpResponse put = Http.put(url, body);
+HttpResponse del = Http.delete(url);</code></pre>
+
+  <h2>Options</h2>
+  <p><code>HttpOptions</code> is immutable; each <code>withX</code> call returns a
+  new instance.</p>
+  <pre><code>HttpOptions options = HttpOptions.defaults()
+        .withHeader("Authorization", "Bearer " + token)   // repeated calls: last value wins
+        .withHeaders(Map.of("Accept", "application/json"))
+        .withQueryParam("verbose", "true")                 // percent-encoded automatically
+        .withTimeout(Duration.ofSeconds(10))
+        .withClient(myOwnHttpClient);                       // bring your own HttpClient
+
+HttpResponse response = Http.post(url, body, options);</code></pre>
+
+  <p>When no <code>HttpClient</code> is supplied, <code>Http</code> uses a single
+  lazily-created shared default client (10s connect timeout,
+  <code>HttpClient.Redirect.NORMAL</code>). Supply your own via
+  <code>withClient(...)</code> for connection pooling across calls, a custom
+  <code>SSLContext</code>, proxy configuration, or a stricter redirect policy.</p>
+
+  <h2>Reading the response</h2>
+  <pre><code>response.statusCode();
+response.isSuccessful();                 // true for [200, 300)
+response.headers();                      // Map&lt;String, List&lt;String&gt;&gt;
+response.body();                         // UTF-8 decoded
+response.bodyBytes();                    // raw, defensively copied
+response.raw();                          // escape hatch: java.net.http.HttpResponse&lt;byte[]&gt;</code></pre>
+
+  <p>A non-2xx status (404, 500, ...) is <strong>not</strong> an exception &mdash;
+  it's a normal <code>HttpResponse</code> with <code>isSuccessful() == false</code>.
+  <code>Http</code> throws <code>HttpRequestException</code> only for genuine
+  transport failures: connection refused, timeout, DNS failure, or the calling
+  thread being interrupted. A malformed URL throws
+  <code>IllegalArgumentException</code> instead (a caller bug, not a network
+  failure).</p>
+
+  <div class="card"><strong>Secret redaction:</strong> <code>HttpOptions</code> and
+  <code>HttpResponse</code> redact values for header names that look like secrets
+  (containing <code>authorization</code>, <code>cookie</code>, <code>token</code>,
+  <code>secret</code>, <code>key</code>, or <code>password</code>, case-insensitive)
+  in their <code>toString()</code> output. This is a best-effort heuristic, not a
+  guarantee &mdash; see <code>SECURITY.md</code>.</div>
+
+  <p><a href="time.html">&larr; Date &amp; Time</a> &middot;
+     <a href="async.html">Async &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

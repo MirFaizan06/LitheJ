@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Result &amp; Error Handling · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a class="active" href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Result &amp; Error Handling</h1>
+  <p class="lede">LitheJ uses two complementary tools for failure, and is deliberate
+  about which one applies where.</p>
+
+  <h2>Exceptions, for genuine failures</h2>
+  <p>A missing file, a malformed number, a network error &mdash; these are
+  exceptions, mostly unchecked, and every method's Javadoc documents exactly what it
+  throws and why. This is ordinary Java; LitheJ does not invent a new convention
+  here.</p>
+
+  <h2><code>Result&lt;T, E&gt;</code>, for expected outcomes</h2>
+  <p>Use <code>lithej.core.Result</code> when a "failure" is a normal, recoverable
+  outcome you want to handle without exception-based control flow &mdash; e.g. "the
+  input didn't parse," "the API returned 404."</p>
+
+  <pre><code>Result&lt;Integer, String&gt; parsed = Numbers.tryInt(input).isPresent()
+        ? Result.success(Numbers.tryInt(input).getAsInt())
+        : Result.failure("not a number: " + input);
+
+parsed.isSuccess();
+parsed.isFailure();
+parsed.get();                        // throws NoSuchElementException if failure
+parsed.getError();                   // throws NoSuchElementException if success
+parsed.orElse(0);
+parsed.orElseGet(err -&gt; -1);
+parsed.orElseThrow(IllegalStateException::new);
+
+parsed.map(n -&gt; n * 2);              // transforms success, passes failure through
+parsed.mapError(String::toUpperCase);
+parsed.flatMap(n -&gt; otherResult);
+
+parsed.ifSuccess(n -&gt; System.out.println("got " + n));
+parsed.ifFailure(err -&gt; System.out.println("failed: " + err));
+
+parsed.toOptional();                 // Optional&lt;T&gt;, discards the error on failure</code></pre>
+
+  <h2>Wrapping a throwing call</h2>
+  <pre><code>Result&lt;String, Exception&gt; attempt = Result.of(() -&gt; Files.readString(path));</code></pre>
+  <p><code>Result.of</code> catches any <code>Exception</code> thrown by the supplier
+  and wraps it as a failure; a returned value becomes a success.</p>
+
+  <div class="card"><strong>Deliberately small:</strong> <code>Result</code> covers
+  success/failure, transformation, and extraction. It is not a general functional-
+  programming toolkit &mdash; for anything more elaborate, use a <code>Stream</code>
+  or <code>Optional</code> directly.</div>
+
+  <p><a href="validation.html">&larr; Validation</a> &middot;
+     <a href="time.html">Date &amp; Time &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

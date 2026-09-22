@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Start · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a class="active" href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Quick Start</h1>
+  <p class="lede">A minimal program touching console, collections, and file I/O.</p>
+
+  <pre><code>import lithej.console.Console;
+import lithej.collections.Lists;
+import lithej.io.FileIO;
+import java.nio.file.Path;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        String name = Console.ask("What's your name? ");
+        Console.println("Hello, " + name + "!");
+
+        List&lt;Integer&gt; numbers = Lists.of(1, 2, 3, 4, 5, 6);
+        List&lt;Integer&gt; even = Lists.filter(numbers, n -&gt; n % 2 == 0);
+        Console.println("Even numbers: " + even);
+
+        FileIO.write(Path.of("greeting.txt"), "Hello, " + name + "!\n");
+    }
+}</code></pre>
+
+  <p>That's it &mdash; no interfaces to implement, no framework to bootstrap. Every
+  LitheJ call above is a plain static method taking and returning ordinary JDK
+  types.</p>
+
+  <h2>Where to go next</h2>
+  <ul>
+    <li>Building a CLI tool? Start with <a href="console.html">Console</a> and
+      <a href="validation.html">Validation</a>.</li>
+    <li>Processing files? See <a href="files.html">Files &amp; Directories</a>.</li>
+    <li>Calling an API? See <a href="http.html">HTTP</a> and
+      <a href="result.html">Result &amp; Error Handling</a>.</li>
+    <li>Look at the <code>examples/</code> and <code>demos/</code> directories in the
+      repository for complete, runnable programs.</li>
+  </ul>
+
+  <p><a href="installation.html">&larr; Installation</a> &middot;
+     <a href="console.html">Console &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

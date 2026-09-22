@@ -1,0 +1,236 @@
+:root {
+  --bg: #ffffff;
+  --bg-alt: #f6f7f9;
+  --text: #1c1f24;
+  --text-dim: #5b6270;
+  --border: #e3e6ea;
+  --accent: #2a5db0;
+  --accent-dim: #e8f0fd;
+  --code-bg: #1c1f24;
+  --code-text: #e8eaed;
+  --radius: 8px;
+  --maxw: 1180px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161a;
+    --bg-alt: #1b1e24;
+    --text: #e7e9ec;
+    --text-dim: #9aa2b1;
+    --border: #2a2e36;
+    --accent: #6fa3ef;
+    --accent-dim: #1c2b40;
+    --code-bg: #0e1013;
+    --code-text: #dfe3e8;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.layout {
+  display: flex;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  padding: 24px 16px;
+  border-right: 1px solid var(--border);
+}
+
+.sidebar .brand {
+  font-weight: 700;
+  font-size: 1.3rem;
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.sidebar .tagline {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.sidebar nav h3 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  margin: 18px 0 6px;
+}
+
+.sidebar nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar nav li a {
+  display: block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.sidebar nav li a:hover {
+  background: var(--bg-alt);
+  text-decoration: none;
+}
+
+.sidebar nav li a.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+main {
+  flex: 1;
+  min-width: 0;
+  padding: 32px 40px 80px;
+}
+
+main h1 {
+  margin-top: 0;
+  font-size: 2rem;
+}
+
+main h2 {
+  margin-top: 2.2em;
+  padding-top: 0.4em;
+  border-top: 1px solid var(--border);
+  font-size: 1.4rem;
+}
+
+main h3 {
+  font-size: 1.1rem;
+}
+
+p, li { color: var(--text); }
+
+.lede {
+  color: var(--text-dim);
+  font-size: 1.1rem;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--bg-alt);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  font-size: 0.92rem;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--bg-alt);
+}
+
+.card {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin: 1em 0;
+}
+
+.badge-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 1em 0;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 1.2em 0;
+}
+
+.module-grid a {
+  display: block;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+}
+
+.module-grid a:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+.module-grid strong {
+  display: block;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+footer.page-footer {
+  margin-top: 3em;
+  padding-top: 1em;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 800px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  main { padding: 24px 20px 60px; }
+}

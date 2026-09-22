@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Console · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a class="active" href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Console</h1>
+  <p class="lede">Validated, retrying prompts over stdin/stdout &mdash; or over any
+  stream you inject for testing.</p>
+
+  <p><code>Console</code> is a static facade over <code>System.in</code>/
+  <code>System.out</code>, convenient for scripts and small CLI tools.
+  <code>ConsoleIO</code> is the same API bound to streams you construct, for code you
+  want to unit test.</p>
+
+  <h2>Basic output</h2>
+  <pre><code>Console.print("no newline");
+Console.println("with a newline");
+Console.println();
+Console.printf("%s is %d%n", "age", 42);</code></pre>
+
+  <h2>Reading input</h2>
+  <pre><code>String name = Console.ask("Name: ");
+int age = Console.askInt("Age: ");                 // retries until a valid int, no limit
+int tries = Console.askInt("Age: ", 3);             // throws IllegalStateException after 3 bad tries
+long id = Console.askLong("ID: ");
+double price = Console.askDouble("Price: ");
+boolean sure = Console.askBoolean("Continue? ");    // accepts y/yes/true, n/no/false (case-insensitive)
+boolean ok = Console.confirm("Proceed?");           // same as askBoolean, with "(y/n): " appended
+String pass = Console.readPassword("Password: ");   // masked if a real console is attached</code></pre>
+
+  <h2>Validated input</h2>
+  <pre><code>String email = Console.ask("Email: ", Validate::isEmail, "That doesn't look like an email.");</code></pre>
+
+  <h2>Menus</h2>
+  <pre><code>String color = Console.choose("Pick a color:", List.of("red", "green", "blue"));</code></pre>
+
+  <h2>Testing console interaction</h2>
+  <p>Don't redirect <code>System.in</code>/<code>System.out</code> in tests &mdash;
+  construct a <code>ConsoleIO</code> over your own streams instead, and depend on
+  <code>ConsoleIO</code> (not <code>Console</code>) in code you want to test:</p>
+  <pre><code>var in = new ByteArrayInputStream("42\n".getBytes(UTF_8));
+var out = new ByteArrayOutputStream();
+ConsoleIO console = new ConsoleIO(in, new PrintStream(out, true, UTF_8));
+
+int age = console.askInt("Enter age: ");
+assertEquals(42, age);
+assertTrue(out.toString(UTF_8).contains("Enter age: "));</code></pre>
+
+  <div class="card"><strong>Thread safety:</strong> a <code>ConsoleIO</code> (and the
+  shared <code>Console</code> instance) is not thread-safe for concurrent reads
+  &mdash; a console session is inherently single-reader. Use one instance per session,
+  from one thread.</div>
+
+  <p><a href="quick-start.html">&larr; Quick Start</a> &middot;
+     <a href="files.html">Files &amp; Directories &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

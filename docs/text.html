@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Text · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a class="active" href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Text</h1>
+  <p class="lede">String helpers for blank checks, splitting, joining, casing,
+  padding, and substring extraction, from <code>lithej.text.Text</code> in
+  <code>lithej-core</code>.</p>
+
+  <pre><code>Text.isBlank(null);                        // true
+Text.isBlank("   ");                       // true
+Text.isNotBlank("hi");                     // true
+
+Text.words("  hello   world  ");           // ["hello", "world"]
+Text.lines("a\nb\r\nc");                   // ["a", "b", "c"]
+Text.join(", ", List.of("a", "b", "c"));   // "a, b, c"
+Text.repeat("ab", 3);                      // "ababab"
+Text.reverse("hello");                     // "olleh"  (surrogate-pair safe)
+
+Text.capitalize("hello");                  // "Hello"
+Text.uncapitalize("Hello");                // "hello"
+Text.titleCase("hello world");             // "Hello World"
+
+Text.truncate("hello world", 5);           // "hello"
+Text.ellipsis("hello world", 8);           // "hello..."
+Text.padLeft("7", 3, '0');                 // "007"
+Text.padRight("7", 3, '0');                // "700"
+
+Text.removePrefix("prefixed-value", "prefixed-");  // "value"
+Text.removeSuffix("value.txt", ".txt");            // "value"
+Text.substringBefore("a=b=c", "=");                // "a"
+Text.substringAfter("a=b=c", "=");                 // "b=c"
+Text.between("&lt;a&gt;value&lt;/a&gt;", "&lt;a&gt;", "&lt;/a&gt;");  // Optional["value"]
+Text.count("aaaa", "aa");                          // 2 (non-overlapping)</code></pre>
+
+  <div class="card"><strong>Unicode:</strong> methods operate on Unicode code points
+  where that matters (e.g. <code>capitalize</code> title-cases the first code point,
+  not just the first <code>char</code>, and <code>reverse</code> keeps surrogate
+  pairs intact) but do <strong>not</strong> implement full grapheme-cluster
+  segmentation (UAX #29) &mdash; a base character and a separate combining-mark code
+  point can still be reordered by <code>reverse</code>. Use
+  <code>java.text.BreakIterator</code> if you need grapheme-correct processing.</div>
+
+  <p><a href="collections.html">&larr; Collections, Maps &amp; Sets</a> &middot;
+     <a href="numbers.html">Numbers &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

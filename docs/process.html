@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Processes · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a class="active" href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Processes</h1>
+  <p class="lede">A safe wrapper around <code>ProcessBuilder</code>, from
+  <code>lithej.process.ProcessX</code> in <code>lithej-io</code>.</p>
+
+  <h2>Running a command</h2>
+  <pre><code>ProcessResult result = ProcessX.run("git", "status");
+ProcessResult result2 = ProcessX.run(List.of("git", "status"));
+
+result.exitCode();
+result.succeeded();     // exitCode() == 0
+result.stdout();
+result.stderr();</code></pre>
+
+  <h2>Options</h2>
+  <pre><code>ProcessOptions options = ProcessOptions.defaults()
+        .withWorkingDirectory(Path.of("/tmp/build"))
+        .withEnvironment(Map.of("CI", "true"))     // added on top of the inherited environment
+        .withTimeout(Duration.ofSeconds(30));
+
+ProcessResult result = ProcessX.run(List.of("./build.sh"), options);</code></pre>
+
+  <div class="card"><strong>Why not just use <code>ProcessBuilder</code> directly?</strong>
+  <code>ProcessX</code> always drains stdout and stderr on dedicated threads while
+  waiting for the process to exit. This avoids a classic deadlock: if a process
+  writes more output than the OS pipe buffer holds (typically 64KB) and nothing is
+  reading it, the process blocks trying to write, and code that waits for exit
+  before reading output blocks forever.</div>
+
+  <h2>Timeouts &amp; failures</h2>
+  <p>If a timeout is configured and elapses, the process is forcibly terminated
+  (<code>destroyForcibly()</code>) before <code>ProcessTimeoutException</code> is
+  thrown. If the process cannot be started at all (e.g. the command doesn't exist),
+  or the calling thread is interrupted while waiting,
+  <code>ProcessExecutionException</code> is thrown (with the interrupt flag restored
+  first, in the interruption case).</p>
+
+  <h2>Quoting</h2>
+  <p>Each element of the command list is passed to the OS as a separate argument
+  &mdash; there is no shell involved unless you explicitly invoke one (e.g.
+  <code>List.of("sh", "-c", "...")</code>). You do not need to quote arguments
+  containing spaces yourself.</p>
+
+  <p><a href="config.html">&larr; Configuration &amp; Resources</a> &middot;
+     <a href="migration.html">Migration &amp; FAQ &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LitheJ Documentation</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a class="active" href="index.html">Getting Started</a></li>
+      <li><a href="installation.html">Installation</a></li>
+      <li><a href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a href="console.html">Console</a></li>
+      <li><a href="files.html">Files &amp; Directories</a></li>
+      <li><a href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a href="text.html">Text</a></li>
+      <li><a href="numbers.html">Numbers</a></li>
+      <li><a href="validation.html">Validation</a></li>
+      <li><a href="result.html">Result &amp; Error Handling</a></li>
+      <li><a href="time.html">Date &amp; Time</a></li>
+      <li><a href="http.html">HTTP</a></li>
+      <li><a href="async.html">Async</a></li>
+      <li><a href="config.html">Configuration &amp; Resources</a></li>
+      <li><a href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>LitheJ</h1>
+  <p class="lede">A small, dependency-free Java library that makes common, repetitive
+  Java tasks shorter and safer to write, without hiding how Java works.</p>
+
+  <div class="badge-row">
+    <span class="badge">Java 17+</span>
+    <span class="badge">Apache-2.0</span>
+    <span class="badge">Zero required runtime deps</span>
+  </div>
+
+  <pre><code>int age = Console.askInt("Enter age: ");
+
+List&lt;Integer&gt; numbers = Lists.of(1, 2, 3, 4, 5);
+List&lt;Integer&gt; even = Lists.filter(numbers, n -&gt; n % 2 == 0);
+
+List&lt;String&gt; lines = FileIO.readLines(Path.of("users.txt"));</code></pre>
+
+  <h2>Why this exists</h2>
+  <p>Ordinary Java tasks &mdash; reading a validated integer from stdin, reading a
+  UTF-8 file, filtering a list, joining strings &mdash; take more boilerplate than they
+  should, and that boilerplate is exactly where small bugs (wrong charset, forgotten
+  resource close, off-by-one loop) creep in. LitheJ wraps these tasks in a small,
+  consistent API built entirely on top of the JDK: every method accepts and returns
+  standard types (<code>List</code>, <code>Map</code>, <code>Path</code>,
+  <code>Optional</code>, <code>Duration</code>, <code>CompletableFuture</code>, &hellip;),
+  so you can mix LitheJ calls with plain Java freely and drop back to the JDK API at
+  any point.</p>
+
+  <p>LitheJ is <strong>not</strong> a competing collections framework, date/time
+  library, HTTP client, or async runtime &mdash; each module is a thin, honest layer
+  over the matching JDK API.</p>
+
+  <h2>Modules</h2>
+  <div class="module-grid">
+    <a href="console.html"><strong>Console</strong>Validated, retrying prompts over an injectable stream</a>
+    <a href="files.html"><strong>Files &amp; Directories</strong>UTF-8 reads/writes, safe copy/move, recursive walk</a>
+    <a href="collections.html"><strong>Collections</strong>Lists, Maps, Sets, Iterables helpers</a>
+    <a href="text.html"><strong>Text</strong>Blank checks, splitting, casing, padding</a>
+    <a href="numbers.html"><strong>Numbers</strong>Safe parsing, clamping, rounding</a>
+    <a href="validation.html"><strong>Validation</strong>Argument checks that return the value</a>
+    <a href="result.html"><strong>Result</strong>Success/failure without exceptions</a>
+    <a href="time.html"><strong>Date &amp; Time</strong>Timezone-explicit java.time helpers</a>
+    <a href="http.html"><strong>HTTP</strong>GET/POST/PUT/DELETE over java.net.http</a>
+    <a href="async.html"><strong>Async</strong>CompletableFuture helpers, no hidden pools</a>
+    <a href="config.html"><strong>Config &amp; Resources</strong>Layered config, classpath resources</a>
+    <a href="process.html"><strong>Processes</strong>Safe ProcessBuilder wrapper</a>
+  </div>
+
+  <h2>Requirements</h2>
+  <ul>
+    <li><strong>Java 17 or newer.</strong> LitheJ uses no API newer than 17 in its main
+      source, so it runs unmodified on 17, 21, 25, and later.</li>
+    <li>No required runtime dependencies beyond the JDK.</li>
+  </ul>
+
+  <p>Next: <a href="installation.html">Installation &rarr;</a></p>
+
+  <footer class="page-footer">
+    LitheJ is licensed under the Apache License, Version 2.0. ·
+    <a href="https://github.com/YOUR_GITHUB_USERNAME/lithej">Source on GitHub</a>
+  </footer>
+</main>
+</div>
+</body>
+</html>

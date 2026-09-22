@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuration &amp; Resources · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a class="active" href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Configuration &amp; Resources</h1>
+  <p class="lede">Environment variables, <code>.properties</code> files, a small
+  layered config source, and classpath resource access, from
+  <code>lithej-config</code> (and <code>lithej.io.Resources</code> for the last one).</p>
+
+  <h2>Env</h2>
+  <pre><code>Optional&lt;String&gt; home = Env.get("HOME");
+String required = Env.require("DATABASE_URL");       // throws NoSuchElementException if unset
+int port = Env.getInt("PORT", 8080);
+boolean debug = Env.getBoolean("DEBUG", false);       // recognizes true/1/yes/y, false/0/no/n</code></pre>
+  <p><code>Env</code> is read-only &mdash; environment variables can't be changed at
+  runtime, so there is no <code>Env.set(...)</code>.</p>
+
+  <h2>PropertiesX</h2>
+  <pre><code>Properties props = PropertiesX.load(path);                       // UTF-8 by default
+Properties props2 = PropertiesX.load(path, charset);
+Properties props3 = PropertiesX.loadFromResource("app.properties"); // from the classpath
+
+String value = PropertiesX.require(props, "app.name");
+int port = PropertiesX.getInt(props, "port", 8080);
+boolean flag = PropertiesX.getBoolean(props, "enabled", false);</code></pre>
+
+  <h2>Config &mdash; layered, explicit precedence</h2>
+  <p><strong>Layers are consulted in the order they were added; the first layer that
+  has a value wins.</strong> List higher-priority overrides first:</p>
+  <pre><code>Config config = Config.empty()
+        .withSystemProperties()       // -Dport=8080 on the java command line
+        .withEnvironmentVariables()   // PORT=8080 in the shell
+        .withProperties(fileProps)    // port=8080 in app.properties
+        .withDefault("port", "8080"); // final fallback
+
+int port = config.getInt("port", 8080);
+String name = config.require("app.name");</code></pre>
+
+  <h2 id="resources">Resources (classpath)</h2>
+  <p>For files bundled inside your JAR, not on the real filesystem:</p>
+  <pre><code>String config = Resources.read("config/defaults.properties");
+List&lt;String&gt; lines = Resources.readLines("data.csv");
+byte[] bytes = Resources.readBytes("logo.png");
+boolean present = Resources.exists("optional.txt");
+try (InputStream in = Resources.open("large-file.bin")) { ... }</code></pre>
+  <p>Throws <code>ResourceNotFoundException</code> (not a confusing
+  <code>NullPointerException</code> from a <code>null</code> stream) when the
+  resource is missing.</p>
+
+  <p><a href="async.html">&larr; Async</a> &middot;
+     <a href="process.html">Processes &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

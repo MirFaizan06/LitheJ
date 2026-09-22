@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Files &amp; Directories · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a class="active" href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Files &amp; Directories</h1>
+  <p class="lede">UTF-8-by-default file I/O with explicit overwrite semantics, plus
+  directory-level helpers, from <code>lithej-io</code>.</p>
+
+  <h2>Reading</h2>
+  <pre><code>String text = FileIO.read(path);                 // whole file, UTF-8
+String text2 = FileIO.read(path, charset);        // explicit charset
+List&lt;String&gt; lines = FileIO.readLines(path);
+byte[] bytes = FileIO.readBytes(path);</code></pre>
+
+  <h2>Writing</h2>
+  <p>Write methods create missing parent directories automatically and
+  <strong>overwrite</strong> an existing target file &mdash; the same behavior as
+  <code>Files.writeString</code>, documented on every method rather than left as a
+  surprise.</p>
+  <pre><code>FileIO.write(path, "content");
+FileIO.writeLines(path, List.of("a", "b", "c"));
+FileIO.writeBytes(path, bytes);
+FileIO.append(path, "more\n");                    // creates the file if absent
+FileIO.writeAtomic(path, "content");               // write-to-temp, then atomic move</code></pre>
+
+  <h2>Copy &amp; move</h2>
+  <p>Unlike writing, copy/move <strong>refuse</strong> to overwrite an existing target
+  by default &mdash; you opt in explicitly:</p>
+  <pre><code>FileIO.copy(source, target);            // throws FileAlreadyExistsException if target exists
+FileIO.copy(source, target, true);      // explicit opt-in to overwrite
+FileIO.move(source, target);
+FileIO.move(source, target, true);</code></pre>
+
+  <h2>Delete, exists, metadata</h2>
+  <pre><code>FileIO.delete(path);                    // throws if missing
+FileIO.deleteIfExists(path);            // returns false if missing, never throws for that
+FileIO.exists(path);
+FileIO.size(path);
+FileIO.extension(Path.of("archive.tar.gz"));  // Optional["gz"]
+FileIO.name(Path.of("a/b/c.txt"));            // "c.txt"</code></pre>
+
+  <h2>Walking a tree</h2>
+  <pre><code>List&lt;Path&gt; allFiles = FileIO.walk(root);                       // regular files, recursive
+List&lt;Path&gt; txtFiles = FileIO.find(root, p -&gt; p.toString().endsWith(".txt"));</code></pre>
+
+  <h2>Temp files</h2>
+  <pre><code>Path tempFile = FileIO.tempFile("prefix-", ".tmp");   // deleted on normal JVM exit
+Path tempDir = FileIO.tempDirectory("prefix-");        // NOT auto-deleted; clean it up yourself</code></pre>
+
+  <h2>Directories</h2>
+  <pre><code>Directories.ensureExists(dir);              // create if missing, no-op if already a directory
+Directories.create(dir);                    // create (including parents)
+List&lt;Path&gt; children = Directories.list(dir);           // immediate children only
+List&lt;Path&gt; all = Directories.listRecursive(dir);        // every descendant
+long bytes = Directories.size(dir);                     // recursive total
+boolean empty = Directories.isEmpty(dir);
+Directories.copyTree(source, target);        // target must not exist, or must be empty</code></pre>
+
+  <div class="card"><strong>Destructive, on purpose:</strong>
+  <pre><code>Directories.empty(dir);            // deletes every entry inside dir, keeps dir itself
+Directories.deleteRecursive(dir);  // deletes dir and everything inside it</code></pre>
+  Both permanently destroy data with no recovery mechanism. Their names say exactly
+  what they do &mdash; there is no shorter alias for either, on purpose. Never call
+  either with a caller-controlled path you haven't validated.</div>
+
+  <h2>Classpath resources</h2>
+  <p>For files bundled inside your JAR (not on the real filesystem), use
+  <code>Resources</code> instead of <code>FileIO</code> &mdash; see
+  <a href="config.html#resources">Configuration &amp; Resources</a>.</p>
+
+  <p><a href="console.html">&larr; Console</a> &middot;
+     <a href="collections.html">Collections, Maps &amp; Sets &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migration &amp; FAQ · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a class="active" href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Migration &amp; Compatibility</h1>
+
+  <h2>Versioning policy</h2>
+  <p>LitheJ follows <a href="https://semver.org/">Semantic Versioning</a>.
+  Before <code>1.0.0</code>, minor versions may include breaking changes as the API
+  is finalized. From <code>1.0.0</code> onward, only major version bumps break
+  public API compatibility. This is checked automatically via
+  <a href="https://revapi.org/">Revapi</a> in CI once a <code>1.0.0</code> baseline
+  exists.</p>
+
+  <h2>Upgrading between versions</h2>
+  <p>See <a href="https://github.com/YOUR_GITHUB_USERNAME/lithej/blob/main/CHANGELOG.md">CHANGELOG.md</a>
+  for the full history. Each release entry lists additions, changes, and (for major
+  versions) breaking changes with a migration note.</p>
+
+  <h2>Migrating from hand-written Java</h2>
+  <p>LitheJ methods accept and return standard JDK types, so adoption is usually a
+  local, incremental replacement &mdash; you don't need to migrate a whole codebase
+  at once:</p>
+  <table>
+    <tr><th>Before</th><th>After</th></tr>
+    <tr>
+      <td><pre><code>BufferedReader reader = new BufferedReader(
+    new InputStreamReader(System.in));
+System.out.print("Enter age: ");
+int age;
+while (true) {
+    try {
+        age = Integer.parseInt(reader.readLine());
+        break;
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid.");
+    }
+}</code></pre></td>
+      <td><pre><code>int age = Console.askInt("Enter age: ");</code></pre></td>
+    </tr>
+    <tr>
+      <td><pre><code>List&lt;String&gt; lines = Files.readAllLines(
+    Path.of("users.txt"), StandardCharsets.UTF_8);</code></pre></td>
+      <td><pre><code>List&lt;String&gt; lines = FileIO.readLines(
+    Path.of("users.txt"));</code></pre></td>
+    </tr>
+  </table>
+
+  <h1 style="margin-top:2em">FAQ</h1>
+
+  <h3>Does LitheJ replace <code>java.util.stream</code>?</h3>
+  <p>No. LitheJ's collection helpers exist for the specific cases where a stream
+  pipeline is noticeably more boilerplate than a single named method (e.g.
+  <code>Lists.groupBy</code> vs. <code>Collectors.groupingBy</code> plus imports).
+  Where a stream is already simple, use a stream.</p>
+
+  <h3>Can I mix LitheJ with plain Java?</h3>
+  <p>Yes, freely &mdash; that's the point. Every method takes and returns standard
+  JDK types, so you can call LitheJ for one line and plain Java for the next with no
+  friction.</p>
+
+  <h3>Is LitheJ thread-safe?</h3>
+  <p>See the <a href="../README.md">README's thread-safety section</a> and each
+  class's own Javadoc. In short: stateless utility classes and immutable value types
+  are thread-safe; <code>ConsoleIO</code> is not, for concurrent reads.</p>
+
+  <h3>Why doesn't <code>Http</code> support retries or connection pooling config directly?</h3>
+  <p>Because that's exactly the kind of scope that turns a thin wrapper into a
+  competing framework. Supply your own pre-configured <code>HttpClient</code> via
+  <code>HttpOptions.withClient(...)</code> for anything beyond a single
+  request/response.</p>
+
+  <h3>Where do I report a bug or request a feature?</h3>
+  <p><a href="https://github.com/YOUR_GITHUB_USERNAME/lithej/issues">GitHub Issues</a>.
+  See <code>SUPPORT.md</code> in the repository.</p>
+
+  <p><a href="process.html">&larr; Processes</a> &middot;
+     <a href="api-reference.html">API Reference &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

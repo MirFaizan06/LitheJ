@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Date &amp; Time · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a class="active" href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Date &amp; Time</h1>
+  <p class="lede"><code>lithej.time.Times</code> is a thin set of conveniences built
+  directly on <code>java.time</code> &mdash; not a competing date/time framework.
+  Every method accepts and returns standard <code>java.time</code> types.</p>
+
+  <div class="card"><strong>Timezone discipline is the core design rule here:</strong>
+  any method that renders "the current moment" as a calendar date/time takes an
+  explicit <code>ZoneId</code>. The <em>one</em> documented exception is
+  <code>Times.today()</code>, which uses <code>ZoneId.systemDefault()</code> because
+  "today" inherently means "today where I am" &mdash; and its Javadoc says so in
+  bold, pointing at the zoned overload.</div>
+
+  <h2>Now &amp; today</h2>
+  <pre><code>Instant now = Times.now();                    // zone-independent
+LocalDate today = Times.today();               // uses the system default zone — see above
+LocalDate todayUtc = Times.today(ZoneOffset.UTC);
+LocalDateTime nowInTokyo = Times.nowAt(ZoneId.of("Asia/Tokyo"));</code></pre>
+
+  <h2>Parsing &amp; formatting</h2>
+  <pre><code>LocalDate date = Times.parseDate("2026-01-15", DateTimeFormatter.ISO_LOCAL_DATE);
+LocalDateTime dt = Times.parseDateTime(text, formatter);
+String formatted = Times.format(date, formatter);   // propagates DateTimeParseException on bad input</code></pre>
+
+  <h2>Comparisons &amp; durations</h2>
+  <pre><code>long days = Times.daysBetween(start, end);      // negative if end is before start
+Duration elapsed = Times.between(startInstant, endInstant);
+
+int years = Times.age(birthDate, LocalDate.of(2026, 6, 1));   // throws IAE if asOf precedes birthDate
+int yearsToday = Times.age(birthDate, ZoneId.systemDefault());
+
+boolean past = Times.isPast(someInstant);
+boolean future = Times.isFuture(someInstant);
+boolean pastDate = Times.isPast(someDate, zone);
+boolean futureDate = Times.isFuture(someDate, zone);</code></pre>
+
+  <h2>Calendar helpers</h2>
+  <pre><code>Times.isWeekend(date);    // Saturday/Sunday (ISO/Western convention — documented, not locale-aware)
+Times.isWeekday(date);
+Times.atZone(instant, zone);</code></pre>
+
+  <p><a href="result.html">&larr; Result &amp; Error Handling</a> &middot;
+     <a href="http.html">HTTP &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

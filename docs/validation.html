@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validation · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a class="active" href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Validation</h1>
+  <p class="lede">Argument checks that throw a standard JDK exception with a clear
+  message and <strong>return the validated value</strong>, from
+  <code>lithej.core.Validate</code>, so checks read naturally inline.</p>
+
+  <pre><code>this.name = Validate.notBlank(name, "name");
+this.age = Validate.range(age, 0, 150, "age");</code></pre>
+
+  <h2>Exception policy</h2>
+  <p>Null checks throw <code>NullPointerException</code>; content/shape checks throw
+  <code>IllegalArgumentException</code> &mdash; the same split the JDK itself uses
+  (e.g. <code>Objects.requireNonNull</code>), so <code>catch</code> blocks keyed on
+  exception type behave predictably.</p>
+
+  <pre><code>Validate.notNull(value, "value");            // NPE if null
+Validate.notBlank(text, "text");             // NPE if null, IAE if blank
+Validate.notEmpty(list, "list");             // NPE if null, IAE if empty
+Validate.notEmpty(map, "map");
+
+Validate.isTrue(condition, "message");       // IAE if false
+
+Validate.range(value, min, max, "name");     // inclusive, works for long and double
+Validate.positive(value, "name");            // &gt; 0
+Validate.nonNegative(value, "name");         // &gt;= 0
+
+Validate.matches(value, pattern, "name");    // must match the Pattern entirely
+Validate.isEmail(value);                     // boolean, syntax check only</code></pre>
+
+  <div class="card"><strong><code>isEmail</code> is a syntax check only</strong> — it
+  confirms the string has the basic shape <code>local@domain.tld</code>. It does not
+  verify the mailbox exists, has valid DNS records, or can receive mail. Don't treat
+  it as proof of deliverability.</div>
+
+  <p><a href="numbers.html">&larr; Numbers</a> &middot;
+     <a href="result.html">Result &amp; Error Handling &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

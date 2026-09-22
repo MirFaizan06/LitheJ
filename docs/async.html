@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Async · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a  href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a class="active" href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Async</h1>
+  <p class="lede">Ergonomic helpers around <code>CompletableFuture</code>, from
+  <code>lithej-async</code>. Every method either takes an explicit
+  <code>Executor</code> or is clearly documented as using
+  <code>ForkJoinPool.commonPool()</code> &mdash; the same default
+  <code>CompletableFuture.supplyAsync</code> already uses. Nothing here silently
+  creates an unbounded thread pool.</p>
+
+  <h2>Running work</h2>
+  <pre><code>CompletableFuture&lt;Integer&gt; a = Async.run(() -&gt; expensiveComputation());          // common pool — bold-documented
+CompletableFuture&lt;Integer&gt; b = Async.run(() -&gt; expensiveComputation(), myExecutor); // recommended: explicit executor
+CompletableFuture&lt;Void&gt; c = Async.runAsync(() -&gt; sideEffect(), myExecutor);         // no implicit-pool overload</code></pre>
+
+  <h2>Combining futures</h2>
+  <pre><code>CompletableFuture&lt;List&lt;Integer&gt;&gt; all = Async.all(listOfFutures);   // waits for all; fails if any fails
+CompletableFuture&lt;Integer&gt; first = Async.anyOf(listOfFutures);     // first to complete, success OR failure</code></pre>
+
+  <h2>Blocking with a timeout</h2>
+  <pre><code>int value = Async.await(future, Duration.ofSeconds(5));</code></pre>
+  <p>Translates the checked <code>ExecutionException</code>/<code>InterruptedException</code>/
+  <code>TimeoutException</code> that raw <code>CompletableFuture.get(timeout, unit)</code>
+  would force you to handle into a small, consistent unchecked pair:
+  <code>AsyncExecutionException</code> and <code>AsyncTimeoutException</code>.</p>
+
+  <h2>Non-blocking timeout</h2>
+  <pre><code>CompletableFuture&lt;Integer&gt; withDeadline = Async.withTimeout(future, Duration.ofSeconds(5));</code></pre>
+
+  <div class="card"><strong>Note on mutation:</strong> <code>withTimeout</code> is
+  built on <code>CompletableFuture#orTimeout</code>, which affects the
+  <em>same</em> future object passed in, not a copy. If the timeout elapses, any
+  other code holding a reference to the original future also observes an
+  exceptional completion (with the JDK's own <code>TimeoutException</code>) &mdash;
+  only the future <em>returned</em> by <code>withTimeout</code> translates that into
+  <code>AsyncTimeoutException</code>. This is documented accurately rather than
+  glossed over, since it's the kind of detail that causes confusing bugs if assumed
+  otherwise.</div>
+
+  <p><a href="http.html">&larr; HTTP</a> &middot;
+     <a href="config.html">Configuration &amp; Resources &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

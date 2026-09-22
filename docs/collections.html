@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collections, Maps &amp; Sets · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a  href="index.html">Getting Started</a></li>
+      <li><a  href="installation.html">Installation</a></li>
+      <li><a  href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a  href="console.html">Console</a></li>
+      <li><a  href="files.html">Files &amp; Directories</a></li>
+      <li><a class="active" href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a  href="text.html">Text</a></li>
+      <li><a  href="numbers.html">Numbers</a></li>
+      <li><a  href="validation.html">Validation</a></li>
+      <li><a  href="result.html">Result &amp; Error Handling</a></li>
+      <li><a  href="time.html">Date &amp; Time</a></li>
+      <li><a  href="http.html">HTTP</a></li>
+      <li><a  href="async.html">Async</a></li>
+      <li><a  href="config.html">Configuration &amp; Resources</a></li>
+      <li><a  href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a  href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a  href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Collections, Maps &amp; Sets</h1>
+  <p class="lede">Ergonomic helpers over <code>List</code>, <code>Map</code>,
+  <code>Set</code>, and <code>Iterable</code>, from <code>lithej-collections</code>.
+  Every method takes and returns standard JDK collection types.</p>
+
+  <h2>Lists</h2>
+  <pre><code>List&lt;Integer&gt; numbers = Lists.of(1, 2, 3, 4, 5, 6, 7, 8);   // immutable, like List.of
+List&lt;Integer&gt; mutable = Lists.mutable(1, 2, 3);              // new ArrayList
+
+Lists.map(numbers, n -&gt; n * 2);
+Lists.filter(numbers, n -&gt; n % 2 == 0);
+Lists.reject(numbers, n -&gt; n % 2 == 0);                       // inverse of filter
+Lists.find(numbers, n -&gt; n &gt; 5);                              // Optional&lt;Integer&gt;, first match
+Lists.distinct(numbers);                                       // preserves first-occurrence order
+Lists.flatten(List.of(List.of(1, 2), List.of(3, 4)));
+
+Lists.chunk(numbers, 3);            // [[1,2,3],[4,5,6],[7,8]]
+Lists.partition(numbers, n -&gt; n &gt; 4);   // Map&lt;Boolean, List&lt;Integer&gt;&gt;
+Lists.zip(List.of("a","b"), List.of(1,2));  // pairs, truncated to the shorter list
+Lists.groupBy(numbers, n -&gt; n % 2 == 0 ? "even" : "odd");
+Lists.countBy(numbers, n -&gt; n % 2 == 0 ? "even" : "odd");      // Map&lt;K, Long&gt;
+
+Lists.sortBy(numbers, Comparator.reverseOrder());               // new list, input untouched
+Lists.minBy(numbers, Comparator.naturalOrder());
+Lists.maxBy(numbers, Comparator.naturalOrder());
+
+Lists.take(numbers, 3);
+Lists.drop(numbers, 3);
+Lists.first(numbers);
+Lists.last(numbers);</code></pre>
+
+  <h2>Maps</h2>
+  <pre><code>Map&lt;String, Integer&gt; scores = Map.of("alice", 90, "bob", 75);
+
+Maps.invert(scores);                          // throws IllegalStateException on duplicate values
+Maps.filterKeys(scores, k -&gt; k.startsWith("a"));
+Maps.filterValues(scores, v -&gt; v &gt;= 80);
+Maps.mapValues(scores, v -&gt; v + 5);
+Maps.merge(scoresA, scoresB, Integer::sum);    // scoresB wins ties unless the resolver says otherwise
+Maps.groupBy(people, Person::department, Person::name);</code></pre>
+
+  <h2>Sets</h2>
+  <pre><code>Set&lt;Integer&gt; a = Sets.of(1, 2, 3);
+Set&lt;Integer&gt; b = Sets.of(2, 3, 4);
+
+Sets.union(a, b);          // {1,2,3,4}
+Sets.intersection(a, b);   // {2,3}
+Sets.difference(a, b);     // {1}  (in a, not in b)
+Sets.isSubsetOf(a, b);     // false</code></pre>
+
+  <h2>Iterables</h2>
+  <pre><code>Iterables.toList(someIterable);
+Iterables.size(someIterable);      // O(1) if already a Collection, else O(n)
+Iterables.isEmpty(someIterable);
+Iterables.firstOf(someIterable);   // Optional&lt;T&gt;</code></pre>
+
+  <div class="card"><strong>Null policy:</strong> the collection and
+  function/predicate arguments are validated non-null (throwing
+  <code>NullPointerException</code>) &mdash; a null collection is a bug, not treated
+  as empty. Individual elements inside a collection may be null unless a method's
+  Javadoc says otherwise.</div>
+
+  <p><a href="files.html">&larr; Files &amp; Directories</a> &middot;
+     <a href="text.html">Text &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>
