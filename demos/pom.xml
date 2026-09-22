@@ -10,7 +10,7 @@
     publicly exposed LitheJ API, exactly as an external consumer would use it. If a
     demo is awkward to write, that's a signal to improve the library, not the demo.
   -->
-  <groupId>io.github.YOUR_GITHUB_USERNAME.lithej-demos</groupId>
+  <groupId>io.github.mirfaizan06.lithej-demos</groupId>
   <artifactId>lithej-demos-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>

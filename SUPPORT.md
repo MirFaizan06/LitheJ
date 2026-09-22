@@ -3,15 +3,15 @@
 ## Getting help
 
 - **Documentation**: start with [README.md](README.md) for a quick start, and the
-  [documentation site](https://{{GITHUB_USERNAME}}.github.io/lithej/) for full guides
+  [documentation site](https://MirFaizan06.github.io/lithej/) for full guides
   and API reference by module.
 - **Questions and usage help**: open a
-  [GitHub Discussion](https://github.com/{{GITHUB_USERNAME}}/lithej/discussions) (or,
+  [GitHub Discussion](https://github.com/MirFaizan06/lithej/discussions) (or,
   if Discussions isn't enabled on the repository yet, a
-  [GitHub Issue](https://github.com/{{GITHUB_USERNAME}}/lithej/issues) labeled
+  [GitHub Issue](https://github.com/MirFaizan06/lithej/issues) labeled
   `question`).
 - **Bug reports**: open a
-  [GitHub Issue](https://github.com/{{GITHUB_USERNAME}}/lithej/issues) with a minimal
+  [GitHub Issue](https://github.com/MirFaizan06/lithej/issues) with a minimal
   reproduction (a short code snippet is usually enough), the LitheJ version, the JDK
   version, and the operating system.
 - **Feature requests**: open a GitHub Issue describing the use case, not just the API

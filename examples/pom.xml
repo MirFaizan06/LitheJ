@@ -11,7 +11,7 @@
     resolved from the local Maven repository. Run `./mvnw install` from the repo
     root first so these coordinates are available locally.
   -->
-  <groupId>io.github.YOUR_GITHUB_USERNAME.lithej-examples</groupId>
+  <groupId>io.github.mirfaizan06.lithej-examples</groupId>
   <artifactId>lithej-examples-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>

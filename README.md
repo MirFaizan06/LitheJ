@@ -40,10 +40,9 @@ and reaches for `java.util.stream`, `java.time`, `java.net.http`, or
 
 ## Installation
 
-Coordinates below use the placeholder groupId `io.github.YOUR_GITHUB_USERNAME` —
-replace it with the actual published groupId once you know it (see
-[CONTRIBUTING.md](CONTRIBUTING.md) for the Maven Central / JitPack setup that
-determines this).
+These coordinates will work once the corresponding version is actually published to
+Maven Central or JitPack — see [CONTRIBUTING.md](CONTRIBUTING.md) for the publishing
+setup.
 
 ### Maven
 
@@ -51,7 +50,7 @@ Depend on just what you need:
 
 ```xml
 <dependency>
-    <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+    <groupId>io.github.mirfaizan06</groupId>
     <artifactId>lithej-core</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -61,7 +60,7 @@ Depend on just what you need:
 
 ```xml
 <dependency>
-    <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+    <groupId>io.github.mirfaizan06</groupId>
     <artifactId>lithej</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -70,9 +69,9 @@ Depend on just what you need:
 ### Gradle (Kotlin DSL)
 
 ```kotlin
-implementation("io.github.YOUR_GITHUB_USERNAME:lithej-core:1.0.0")
+implementation("io.github.mirfaizan06:lithej-core:1.0.0")
 // or
-implementation("io.github.YOUR_GITHUB_USERNAME:lithej:1.0.0")
+implementation("io.github.mirfaizan06:lithej:1.0.0")
 ```
 
 ### JitPack (fallback, no Maven Central account needed)
@@ -88,7 +87,7 @@ installable via [JitPack](https://jitpack.io):
     </repository>
 </repositories>
 <dependency>
-    <groupId>com.github.YOUR_GITHUB_USERNAME</groupId>
+    <groupId>com.github.MirFaizan06</groupId>
     <artifactId>lithej</artifactId>
     <version>v1.0.0</version>
 </dependency>
@@ -99,7 +98,7 @@ repositories {
     maven("https://jitpack.io")
 }
 dependencies {
-    implementation("com.github.YOUR_GITHUB_USERNAME:lithej:v1.0.0")
+    implementation("com.github.MirFaizan06:lithej:v1.0.0")
 }
 ```
 
@@ -260,7 +259,7 @@ Result<String, Exception> attempt = Result.of(() -> Files.readString(path));
 | `lithej` | — | Aggregate: depends on every module above |
 
 Each module has one job and (beyond `lithej-core`, which most others depend on) can
-be used independently. See the [documentation site](https://YOUR_GITHUB_USERNAME.github.io/lithej/)
+be used independently. See the [documentation site](https://MirFaizan06.github.io/lithej/)
 for the full guide and generated API reference for every class.
 
 ## Design philosophy

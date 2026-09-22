@@ -28,4 +28,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   artifacts, a GitHub Release with checksums, and (when credentials are configured)
   a Maven Central publish.
 
-[Unreleased]: https://github.com/{{GITHUB_USERNAME}}/lithej/compare/v0.0.0...HEAD
+[Unreleased]: https://github.com/MirFaizan06/lithej/compare/v0.0.0...HEAD

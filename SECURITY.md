@@ -17,9 +17,9 @@ patches.
 Please **do not** open a public GitHub issue for security vulnerabilities.
 
 Instead, use GitHub's private vulnerability reporting: go to the
-[Security tab](https://github.com/{{GITHUB_USERNAME}}/lithej/security) of this
+[Security tab](https://github.com/MirFaizan06/lithej/security) of this
 repository and select "Report a vulnerability." If that is unavailable, email
-{{DEVELOPER_EMAIL}} with a description of the issue, steps to reproduce, and
+mirfaizan8803@gmail.com with a description of the issue, steps to reproduce, and
 its potential impact.
 
 We aim to acknowledge reports within 5 business days and to release a fix or

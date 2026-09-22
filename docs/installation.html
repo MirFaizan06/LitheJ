@@ -45,32 +45,32 @@
   <p class="lede">Add one dependency and start calling static methods &mdash; no
   installer, code generation, or framework bootstrapping.</p>
 
-  <p>Coordinates below use the placeholder groupId
-  <code>io.github.YOUR_GITHUB_USERNAME</code> &mdash; replace it with the actual
-  published groupId (see the project's <code>CONTRIBUTING.md</code>).</p>
+  <p>These coordinates will work once the corresponding version is actually
+  published to Maven Central or JitPack &mdash; see the project's
+  <code>CONTRIBUTING.md</code> for the publishing setup.</p>
 
   <h2>Maven</h2>
   <p>Depend on just the module(s) you need:</p>
   <pre><code>&lt;dependency&gt;
-    &lt;groupId&gt;io.github.YOUR_GITHUB_USERNAME&lt;/groupId&gt;
+    &lt;groupId&gt;io.github.mirfaizan06&lt;/groupId&gt;
     &lt;artifactId&gt;lithej-core&lt;/artifactId&gt;
     &lt;version&gt;1.0.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
   <p>...or pull in every module with the aggregate artifact:</p>
   <pre><code>&lt;dependency&gt;
-    &lt;groupId&gt;io.github.YOUR_GITHUB_USERNAME&lt;/groupId&gt;
+    &lt;groupId&gt;io.github.mirfaizan06&lt;/groupId&gt;
     &lt;artifactId&gt;lithej&lt;/artifactId&gt;
     &lt;version&gt;1.0.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
   <h2>Gradle (Kotlin DSL)</h2>
-  <pre><code>implementation("io.github.YOUR_GITHUB_USERNAME:lithej-core:1.0.0")
+  <pre><code>implementation("io.github.mirfaizan06:lithej-core:1.0.0")
 // or
-implementation("io.github.YOUR_GITHUB_USERNAME:lithej:1.0.0")</code></pre>
+implementation("io.github.mirfaizan06:lithej:1.0.0")</code></pre>
 
   <h2>Gradle (Groovy DSL)</h2>
-  <pre><code>implementation 'io.github.YOUR_GITHUB_USERNAME:lithej-core:1.0.0'</code></pre>
+  <pre><code>implementation 'io.github.mirfaizan06:lithej-core:1.0.0'</code></pre>
 
   <h2>JitPack (fallback)</h2>
   <p>If you'd rather not wait on a Maven Central publish, every tagged release is
@@ -82,7 +82,7 @@ implementation("io.github.YOUR_GITHUB_USERNAME:lithej:1.0.0")</code></pre>
     &lt;/repository&gt;
 &lt;/repositories&gt;
 &lt;dependency&gt;
-    &lt;groupId&gt;com.github.YOUR_GITHUB_USERNAME&lt;/groupId&gt;
+    &lt;groupId&gt;com.github.MirFaizan06&lt;/groupId&gt;
     &lt;artifactId&gt;lithej&lt;/artifactId&gt;
     &lt;version&gt;v1.0.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>

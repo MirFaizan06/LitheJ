@@ -10,7 +10,7 @@ Requirements: JDK 17 or newer (JDK 21 recommended for local development; CI veri
 17, 21, and 25).
 
 ```bash
-git clone https://github.com/{{GITHUB_USERNAME}}/lithej.git
+git clone https://github.com/MirFaizan06/lithej.git
 cd lithej
 ./mvnw clean verify
 ```
@@ -140,7 +140,7 @@ of when this project was set up. **Verify against
 this can change.
 
 1. Create an account at <https://central.sonatype.com/> (or sign in with GitHub).
-2. Register the `io.github.{{GITHUB_USERNAME}}` namespace. For an `io.github.*`
+2. Register the `io.github.MirFaizan06` namespace. For an `io.github.*`
    namespace, verification is done by creating a public GitHub repository with a
    specific name Sonatype gives you (no DNS TXT record needed) — follow the
    in-portal instructions.
@@ -193,14 +193,14 @@ Even without any of the Maven Central setup above, LitheJ remains fully installa
 - **JitPack** ([jitpack.io](https://jitpack.io)) — builds directly from a GitHub tag
   with zero configuration beyond the `jitpack.yml` already in this repository. See the
   JitPack installation instructions in [README.md](README.md#jitpack-fallback). Verify
-  a build actually succeeds at `https://jitpack.io/#{{GITHUB_USERNAME}}/lithej` after
+  a build actually succeeds at `https://jitpack.io/#MirFaizan06/lithej` after
   each tag — a successful `git push --tags` does not by itself prove JitPack built it.
 - **GitHub Pages** — documentation is published automatically from `docs/` on every
   push to `main`.
 
 ## Reporting issues / requesting features
 
-Use [GitHub Issues](https://github.com/{{GITHUB_USERNAME}}/lithej/issues). Please
+Use [GitHub Issues](https://github.com/MirFaizan06/lithej/issues). Please
 include a minimal reproduction for bugs.
 
 ## Code of Conduct

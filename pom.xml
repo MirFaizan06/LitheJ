@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+  <groupId>io.github.mirfaizan06</groupId>
   <artifactId>lithej-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>LitheJ Parent</name>
   <description>Parent POM for LitheJ, a small, dependency-free library that makes common Java programming tasks shorter and safer without hiding how Java works.</description>
-  <url>https://github.com/{{GITHUB_USERNAME}}/lithej</url>
+  <url>https://github.com/MirFaizan06/lithej</url>
   <inceptionYear>2026</inceptionYear>
 
   <licenses>
@@ -24,28 +24,28 @@
 
   <developers>
     <developer>
-      <id>{{GITHUB_USERNAME}}</id>
-      <name>{{DEVELOPER_NAME}}</name>
-      <email>{{DEVELOPER_EMAIL}}</email>
-      <url>https://github.com/{{GITHUB_USERNAME}}</url>
+      <id>MirFaizan06</id>
+      <name>MirFaizan06</name>
+      <email>mirfaizan8803@gmail.com</email>
+      <url>https://github.com/MirFaizan06</url>
     </developer>
   </developers>
 
   <scm>
-    <connection>scm:git:https://github.com/{{GITHUB_USERNAME}}/lithej.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/{{GITHUB_USERNAME}}/lithej.git</developerConnection>
-    <url>https://github.com/{{GITHUB_USERNAME}}/lithej</url>
+    <connection>scm:git:https://github.com/MirFaizan06/lithej.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/MirFaizan06/lithej.git</developerConnection>
+    <url>https://github.com/MirFaizan06/lithej</url>
     <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://github.com/{{GITHUB_USERNAME}}/lithej/issues</url>
+    <url>https://github.com/MirFaizan06/lithej/issues</url>
   </issueManagement>
 
   <ciManagement>
     <system>GitHub Actions</system>
-    <url>https://github.com/{{GITHUB_USERNAME}}/lithej/actions</url>
+    <url>https://github.com/MirFaizan06/lithej/actions</url>
   </ciManagement>
 
   <modules>
@@ -125,37 +125,37 @@
 
       <!-- Internal modules -->
       <dependency>
-        <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+        <groupId>io.github.mirfaizan06</groupId>
         <artifactId>lithej-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+        <groupId>io.github.mirfaizan06</groupId>
         <artifactId>lithej-collections</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+        <groupId>io.github.mirfaizan06</groupId>
         <artifactId>lithej-io</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+        <groupId>io.github.mirfaizan06</groupId>
         <artifactId>lithej-time</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+        <groupId>io.github.mirfaizan06</groupId>
         <artifactId>lithej-net</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+        <groupId>io.github.mirfaizan06</groupId>
         <artifactId>lithej-async</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+        <groupId>io.github.mirfaizan06</groupId>
         <artifactId>lithej-config</artifactId>
         <version>${project.version}</version>
       </dependency>
