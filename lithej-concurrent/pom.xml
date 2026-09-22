@@ -30,4 +30,25 @@
       <artifactId>lithej-core</artifactId>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <!-- On JDK 24+, JEP 491 means synchronized blocks generally no longer pin
+         virtual threads, so the pinning-detection tests are skipped there
+         (see PinningDiagnosticsTest) and the JFR event-recording code path
+         (recordPinningEvent/isOwnThread) is unreachable by design: not
+         under-tested, just untestable without a real pinning event that the
+         JDK itself no longer produces. Lower this module's coverage floor
+         only on JDK 24+ to reflect that, instead of gaming coverage with a
+         synthetic test. -->
+    <profile>
+      <id>jdk24-plus-coverage-floor</id>
+      <activation>
+        <jdk>[24,)</jdk>
+      </activation>
+      <properties>
+        <jacoco.line.minimum>0.80</jacoco.line.minimum>
+        <jacoco.branch.minimum>0.65</jacoco.branch.minimum>
+      </properties>
+    </profile>
+  </profiles>
 </project>
