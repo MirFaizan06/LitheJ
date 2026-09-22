@@ -48,7 +48,7 @@ class HttpTest {
         assertThat(response.statusCode()).isEqualTo(200);
         assertThat(response.body()).isEqualTo("hello");
         assertThat(response.isSuccessful()).isTrue();
-        assertThat(response.headers().get("X-Test")).containsExactly("value1");
+        assertThat(response.headers().get("x-test")).containsExactly("value1");
 
         RecordedRequest recorded = server.takeRequest();
         assertThat(recorded.getMethod()).isEqualTo("GET");
@@ -160,7 +160,7 @@ class HttpTest {
 
     @Test
     void requestTimeoutThrowsHttpRequestException() {
-        server.enqueue(new MockResponse().setBody("late").setBodyDelay(5, TimeUnit.SECONDS));
+        server.enqueue(new MockResponse().setBody("late").setHeadersDelay(5, TimeUnit.SECONDS));
 
         HttpOptions options = HttpOptions.defaults().withTimeout(Duration.ofMillis(300));
 

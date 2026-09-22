@@ -194,6 +194,15 @@ class AsyncTest {
     }
 
     @Test
+    void awaitRethrowsErrorCauseDirectly() {
+        AssertionError failure = new AssertionError("unchecked error failure");
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+        future.completeExceptionally(failure);
+
+        assertThatThrownBy(() -> Async.await(future, Duration.ofSeconds(1))).isSameAs(failure);
+    }
+
+    @Test
     void awaitWrapsCheckedExceptionCauseInAsyncExecutionException() {
         IOException checkedFailure = new IOException("disk error");
         CompletableFuture<Integer> future = new CompletableFuture<>();
@@ -269,9 +278,35 @@ class AsyncTest {
     }
 
     @Test
+    void withTimeoutPropagatesNonTimeoutFailureUnwrapped() {
+        RuntimeException failure = new RuntimeException("not a timeout");
+        // Fails via an async task (rather than a direct completeExceptionally) so the
+        // failure is delivered internally wrapped in a CompletionException, exercising
+        // the unwrapping this method documents.
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            throw failure;
+        }, executor);
+        CompletableFuture<String> bounded = Async.withTimeout(future, Duration.ofSeconds(5));
+
+        assertThatThrownBy(bounded::join)
+                .isInstanceOf(CompletionException.class)
+                .cause().isSameAs(failure);
+    }
+
+    @Test
     void withTimeoutRejectsNullArguments() {
         CompletableFuture<Integer> future = CompletableFuture.completedFuture(1);
         assertThatNullPointerException().isThrownBy(() -> Async.<Object>withTimeout(null, Duration.ofSeconds(1)));
         assertThatNullPointerException().isThrownBy(() -> Async.withTimeout(future, null));
+    }
+
+    // ---- exception types ----
+
+    @Test
+    void asyncTimeoutExceptionWithoutCauseHasNullCauseAndMentionsTimeout() {
+        Duration timeout = Duration.ofSeconds(2);
+        AsyncTimeoutException exception = new AsyncTimeoutException(timeout);
+        assertThat(exception.getMessage()).contains(timeout.toString());
+        assertThat(exception.getCause()).isNull();
     }
 }

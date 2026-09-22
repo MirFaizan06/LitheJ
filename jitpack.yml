@@ -1,0 +1,4 @@
+jdk:
+  - openjdk17
+install:
+  - ./mvnw -q -DskipTests -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dpmd.skip=true -Denforcer.skip=true install

@@ -1,0 +1,30 @@
+name: Feature request
+description: Propose a new API or improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: What are you trying to do? Describe the real-world scenario, not just the API shape.
+    validations:
+      required: true
+  - type: textarea
+    id: current-workaround
+    attributes:
+      label: Current workaround
+      description: What does this look like today without the proposed API, using plain Java or LitheJ as it exists?
+      render: java
+  - type: textarea
+    id: proposed-api
+    attributes:
+      label: Proposed API (optional)
+      render: java
+  - type: checkboxes
+    id: philosophy-check
+    attributes:
+      label: Design philosophy self-check
+      options:
+        - label: This isn't something the JDK already makes equally simple.
+        - label: This wouldn't require adding a new dependency to a core module.
+        - label: This has clear, unsurprising failure semantics (documented null/error behavior).

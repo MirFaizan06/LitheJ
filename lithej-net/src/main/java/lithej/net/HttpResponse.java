@@ -64,6 +64,13 @@ public final class HttpResponse {
     /**
      * Returns the response headers.
      *
+     * <p>Header names are as normalized by the underlying
+     * {@link java.net.http.HttpHeaders} (the JDK's {@code HttpClient} implementation
+     * lower-cases them), not necessarily the exact casing the server sent. HTTP
+     * header names are case-insensitive, so callers that need to look up a specific
+     * header should either match on the lower-cased name or perform a
+     * case-insensitive comparison over {@link #headers()}'s keys.
+     *
      * @return an unmodifiable map of header names to their values, in the order the
      *     server sent them; never {@code null}
      */

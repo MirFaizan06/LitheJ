@@ -246,16 +246,20 @@ public final class Async {
         try {
             return future.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
         } catch (ExecutionException e) {
+            // Deliberately unwrap and rethrow the task's own real failure (preserving
+            // ITS stack trace, which points at the actual failure) rather than wrapping
+            // the uninteresting ExecutionException that CompletableFuture#get adds -
+            // this is the documented contract of this method, not an oversight.
             Throwable cause = e.getCause();
             if (cause instanceof RuntimeException runtimeException) {
-                throw runtimeException;
+                throw runtimeException; // NOPMD - see comment above
             }
             if (cause instanceof Error error) {
-                throw error;
+                throw error; // NOPMD - see comment above
             }
-            throw new AsyncExecutionException(cause != null ? cause : e);
+            throw new AsyncExecutionException(cause != null ? cause : e); // NOPMD - cause is e itself when null
         } catch (TimeoutException e) {
-            throw new AsyncTimeoutException(timeout);
+            throw new AsyncTimeoutException(timeout, e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new AsyncExecutionException(e);
@@ -304,7 +308,7 @@ public final class Async {
             }
             Throwable cause = unwrapCompletionException(throwable);
             if (cause instanceof TimeoutException) {
-                result.completeExceptionally(new AsyncTimeoutException(timeout));
+                result.completeExceptionally(new AsyncTimeoutException(timeout, cause));
             } else {
                 result.completeExceptionally(cause);
             }

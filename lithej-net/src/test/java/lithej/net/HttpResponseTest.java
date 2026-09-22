@@ -82,7 +82,7 @@ class HttpResponseTest {
         server.enqueue(new MockResponse().setResponseCode(200).addHeader("X-Test", "value1"));
         HttpResponse response = Http.get(server.url("/").toString());
 
-        assertThat(response.headers().get("X-Test")).containsExactly("value1");
+        assertThat(response.headers().get("x-test")).containsExactly("value1");
 
         Map<String, List<String>> headers = response.headers();
         assertThatExceptionOfType(UnsupportedOperationException.class)
