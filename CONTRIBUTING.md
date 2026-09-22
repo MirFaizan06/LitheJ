@@ -134,47 +134,81 @@ are configured — signs and publishes to Maven Central.
 ### One-time setup: Maven Central (Central Publishing Portal)
 
 Sonatype's publishing process and tooling have changed over the years (OSSRH →
-Central Publishing Portal); the steps below reflect the Central Publishing Portal as
-of when this project was set up. **Verify against
-<https://central.sonatype.org/publish/publish-guide/> before your first release**, since
-this can change.
+Central Publishing Portal); the steps below were re-verified against
+<https://central.sonatype.org/register/namespace/> and
+<https://central.sonatype.org/publish/publish-portal-maven/> on 2026-09-22. **Re-verify
+before your next release if it's been a while**, since this can change.
 
-1. Create an account at <https://central.sonatype.com/> (or sign in with GitHub).
-2. Register the `io.github.MirFaizan06` namespace. For an `io.github.*`
-   namespace, verification is done by creating a public GitHub repository with a
-   specific name Sonatype gives you (no DNS TXT record needed) — follow the
-   in-portal instructions.
-3. Generate a **user token** (Account → Generate User Token) — this gives you a
-   username/password pair used by the publishing plugin, distinct from your login
-   password.
-4. Add these repository secrets in **GitHub → Settings → Secrets and variables →
-   Actions**:
+**Status for this project:** namespace/token — not yet done (see below). GPG
+signing — done; see the next section.
+
+1. Sign in at <https://central.sonatype.com/> with the GitHub account that owns this
+   repository. **If you signed up via GitHub, the `io.github.MirFaizan06` namespace
+   is very likely already auto-verified** — Sonatype grants `io.github.<your GitHub
+   username>` automatically for GitHub-based signups. Check first: account menu →
+   **View Namespaces**. If it's already listed as verified, skip to step 2.
+   Otherwise, click "Add Namespace", enter `io.github.MirFaizan06`, and follow the
+   in-portal instructions to create a short-lived verification repository (it can be
+   deleted once Sonatype confirms it). If neither works, email
+   central-support@sonatype.com.
+2. Generate a **user token** (account menu → **Generate User Token**) — this gives
+   you a username/password pair used by the publishing plugin, distinct from your
+   login password. This step requires being logged into the portal, so only you can
+   do it.
+3. Add these repository secrets in **GitHub → Settings → Secrets and variables →
+   Actions → New repository secret** (or ask an assistant with a GitHub token that
+   has secrets-write access on this repo to add them, the same way the GPG secrets
+   below were added — without ever putting the raw token in chat/commit history):
    - `CENTRAL_TOKEN_USERNAME` — the generated token's username
    - `CENTRAL_TOKEN_PASSWORD` — the generated token's password
+4. `release.yml` wires these into a generated `settings.xml` `<server>` block (via
+   `actions/setup-java`'s `server-id`/`server-username`/`server-password` inputs) that
+   `central-publishing-maven-plugin`'s `publishingServerId` requires — plain env vars
+   alone are not sufficient for that plugin, despite some older blog posts suggesting
+   otherwise. See the comment in `release.yml` next to the `setup-java` step.
+5. The release profile uses `autoPublish=false` deliberately: a release upload lands
+   in the Central Portal as a pending deployment that a maintainer reviews and
+   manually clicks "Publish" on, rather than going live automatically. Flip it to
+   `true` in the root `pom.xml`'s `release` profile once you're confident in the
+   pipeline and want fully unattended releases.
 
 ### One-time setup: artifact signing (GPG)
 
-Maven Central requires every published artifact to be signed.
+Maven Central requires every published artifact to be signed. **Done for this
+project** — `GPG_PRIVATE_KEY` and `GPG_PASSPHRASE` are already set as repository
+secrets, generated and uploaded programmatically (private key material was written
+only to a local temp file, uploaded via GitHub's encrypted-secret API, then deleted —
+never printed in a terminal transcript or committed).
 
-1. Generate a key pair (skip if you already have one you want to reuse):
+- **Key ID / fingerprint:** `43DD43645AD5536DAA6030567BAC9158BFF21A44`
+  (short ID `7BAC9158BFF21A44`)
+- **Identity:** `MirFaizan06 (LitheJ release signing) <mirfaizan8803@gmail.com>`
+- **Type:** RSA 4096, signing-only
+- **Expires:** 2028-09-21 — rotate before then (repeat the steps below, then update
+  the `GPG_PRIVATE_KEY`/`GPG_PASSPHRASE` secrets and this section)
+- **Published to:** keyserver.ubuntu.com and keys.openpgp.org, so Central can verify
+  signatures against it
+
+To rotate or replace this key:
+
+1. Generate a new key pair:
    ```bash
    gpg --full-generate-key
    ```
-   Choose RSA, 4096 bits, and a reasonable expiry (e.g. 2 years — remember to rotate
-   before it expires).
-2. Publish the public key to a keyserver so Central can verify signatures:
+   Choose RSA, 4096 bits, and a reasonable expiry (e.g. 2 years).
+2. Publish the public key to a keyserver:
    ```bash
    gpg --keyserver keyserver.ubuntu.com --send-keys <YOUR_KEY_ID>
    ```
-3. Export the private key for CI use:
+3. Export the private key:
    ```bash
    gpg --armor --export-secret-keys <YOUR_KEY_ID> > private-key.asc
    ```
-4. Add these repository secrets:
-   - `GPG_PRIVATE_KEY` — the full contents of `private-key.asc`
-   - `GPG_PASSPHRASE` — the passphrase you set when generating the key
-5. **Delete `private-key.asc` from your local disk** once it's stored as a secret;
-   never commit it.
+4. Update the `GPG_PRIVATE_KEY` and `GPG_PASSPHRASE` repository secrets with the new
+   values.
+5. **Delete `private-key.asc` from local disk** once it's stored as a secret; never
+   commit it.
+6. Update the key ID/fingerprint/expiry noted above.
 
 ### Free-tier eligibility
 
