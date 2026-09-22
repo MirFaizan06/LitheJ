@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.github.mirfaizan06</groupId>
+    <artifactId>lithej-parent</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>lithej-concurrent</artifactId>
+  <packaging>jar</packaging>
+  <name>LitheJ Concurrent</name>
+  <description>Leak-proof structured concurrency for virtual threads, built entirely on stable Java 21 APIs (no preview features), with zero-config virtual-thread pinning diagnostics via JFR.</description>
+
+  <properties>
+    <!-- Overrides the parent's Java 17 baseline: virtual threads and this
+         module's design require Java 21. See the jdk21-modules profile in
+         the root pom for how this module is kept out of the reactor on
+         older JDKs instead of raising the whole project's baseline. -->
+    <maven.compiler.release>21</maven.compiler.release>
+    <automatic.module.name>lithej.concurrent</automatic.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.github.mirfaizan06</groupId>
+      <artifactId>lithej-core</artifactId>
+    </dependency>
+  </dependencies>
+</project>

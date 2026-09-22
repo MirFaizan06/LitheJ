@@ -30,6 +30,7 @@
       <li><a href="time.html">Date &amp; Time</a></li>
       <li><a href="http.html">HTTP</a></li>
       <li><a href="async.html">Async</a></li>
+      <li><a href="concurrent.html">Concurrent (Java 21+)</a></li>
       <li><a href="config.html">Configuration &amp; Resources</a></li>
       <li><a href="process.html">Processes</a></li>
     </ul>
@@ -54,23 +55,33 @@
   <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;io.github.mirfaizan06&lt;/groupId&gt;
     &lt;artifactId&gt;lithej-core&lt;/artifactId&gt;
-    &lt;version&gt;1.0.0&lt;/version&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
-  <p>...or pull in every module with the aggregate artifact:</p>
+  <p>...or pull in every Java 17-baseline module with the aggregate artifact:</p>
   <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;io.github.mirfaizan06&lt;/groupId&gt;
     &lt;artifactId&gt;lithej&lt;/artifactId&gt;
-    &lt;version&gt;1.0.0&lt;/version&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+  <p><a href="concurrent.html">lithej-concurrent</a> (Java 21+) is opt-in and not
+  pulled in by the aggregate:</p>
+  <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;io.github.mirfaizan06&lt;/groupId&gt;
+    &lt;artifactId&gt;lithej-concurrent&lt;/artifactId&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
   <h2>Gradle (Kotlin DSL)</h2>
-  <pre><code>implementation("io.github.mirfaizan06:lithej-core:1.0.0")
+  <pre><code>implementation("io.github.mirfaizan06:lithej-core:1.1.0")
 // or
-implementation("io.github.mirfaizan06:lithej:1.0.0")</code></pre>
+implementation("io.github.mirfaizan06:lithej:1.1.0")
+// and/or, separately (Java 21+):
+implementation("io.github.mirfaizan06:lithej-concurrent:1.1.0")</code></pre>
 
   <h2>Gradle (Groovy DSL)</h2>
-  <pre><code>implementation 'io.github.mirfaizan06:lithej-core:1.0.0'</code></pre>
+  <pre><code>implementation 'io.github.mirfaizan06:lithej-core:1.1.0'</code></pre>
 
   <h2>JitPack (fallback)</h2>
   <p>If you'd rather not wait on a Maven Central publish, every tagged release is
@@ -84,7 +95,7 @@ implementation("io.github.mirfaizan06:lithej:1.0.0")</code></pre>
 &lt;dependency&gt;
     &lt;groupId&gt;com.github.MirFaizan06&lt;/groupId&gt;
     &lt;artifactId&gt;lithej&lt;/artifactId&gt;
-    &lt;version&gt;v1.0.0&lt;/version&gt;
+    &lt;version&gt;v1.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
   <h2>Module reference</h2>
@@ -97,7 +108,8 @@ implementation("io.github.mirfaizan06:lithej:1.0.0")</code></pre>
     <tr><td><code>lithej-net</code></td><td>core</td><td>Http, HttpOptions, HttpResponse</td></tr>
     <tr><td><code>lithej-async</code></td><td>core</td><td>Async</td></tr>
     <tr><td><code>lithej-config</code></td><td>core, io</td><td>Env, PropertiesX, Config</td></tr>
-    <tr><td><code>lithej</code></td><td>all of the above</td><td>Aggregate convenience artifact</td></tr>
+    <tr><td><code>lithej-concurrent</code> (Java 21+)</td><td>core</td><td>Concurrency, TaskScope, Subtask, FailurePolicy, PinningEvent</td></tr>
+    <tr><td><code>lithej</code></td><td>all Java 17-baseline modules above</td><td>Aggregate convenience artifact (not lithej-concurrent)</td></tr>
   </table>
 
   <p><a href="index.html">&larr; Getting Started</a> &middot;

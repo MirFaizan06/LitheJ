@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concurrent · LitheJ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="index.html">LitheJ</a>
+  <span class="tagline">Java, with less boilerplate</span>
+  <nav>
+    <h3>Start Here</h3>
+    <ul>
+      <li><a href="index.html">Getting Started</a></li>
+      <li><a href="installation.html">Installation</a></li>
+      <li><a href="quick-start.html">Quick Start</a></li>
+    </ul>
+    <h3>Modules</h3>
+    <ul>
+      <li><a href="console.html">Console</a></li>
+      <li><a href="files.html">Files &amp; Directories</a></li>
+      <li><a href="collections.html">Collections, Maps &amp; Sets</a></li>
+      <li><a href="text.html">Text</a></li>
+      <li><a href="numbers.html">Numbers</a></li>
+      <li><a href="validation.html">Validation</a></li>
+      <li><a href="result.html">Result &amp; Error Handling</a></li>
+      <li><a href="time.html">Date &amp; Time</a></li>
+      <li><a href="http.html">HTTP</a></li>
+      <li><a href="async.html">Async</a></li>
+      <li><a class="active" href="concurrent.html">Concurrent (Java 21+)</a></li>
+      <li><a href="config.html">Configuration &amp; Resources</a></li>
+      <li><a href="process.html">Processes</a></li>
+    </ul>
+    <h3>Reference</h3>
+    <ul>
+      <li><a href="migration.html">Migration &amp; FAQ</a></li>
+      <li><a href="api-reference.html">API Reference</a></li>
+    </ul>
+  </nav>
+</aside>
+<main>
+  <h1>Concurrent</h1>
+  <p class="lede">Leak-proof structured concurrency for virtual threads, built
+  entirely on Java 21's stable APIs &mdash; not the JDK's own preview
+  <code>StructuredTaskScope</code>. Requires Java 21+; ships as its own opt-in
+  artifact, <code>lithej-concurrent</code>, not part of the <code>lithej</code>
+  aggregate.</p>
+
+  <div class="card"><strong>Why this module is different from the rest of LitheJ:</strong>
+  most of the library is a thin, honest layer over JDK APIs that are already simple.
+  This one closes a real, current gap instead: the JDK's own structured-concurrency
+  API has stayed in preview through every release since virtual threads went stable
+  in JDK 21, so there has been no <em>stable</em> way to get its actual safety
+  benefit &mdash; making a leaked background thread structurally impossible &mdash;
+  without depending on an API whose shape keeps changing between JDK versions.</div>
+
+  <h2>Basic usage</h2>
+  <pre><code>try (TaskScope scope = Concurrency.scope()) {
+    Subtask&lt;User&gt; user = scope.fork(() -&gt; fetchUser(id));
+    Subtask&lt;List&lt;Order&gt;&gt; orders = scope.fork(() -&gt; fetchOrders(id));
+
+    scope.joinAll(); // waits for both; first failure cancels the other
+
+    return new Profile(user.get(), orders.get());
+} // guarantee: no forked task can outlive this block. Ever. Not "usually."</code></pre>
+
+  <h2>The guarantee</h2>
+  <p><code>close()</code> always waits for every forked task to actually finish
+  before returning &mdash; whether or not <code>joinAll()</code> was ever called, and
+  whether the try block exits normally, via an exception, or without ever reaching
+  <code>joinAll()</code> at all. There is no equivalent guarantee from a hand-managed
+  <code>ExecutorService</code> plus a list of <code>Future</code>s: forgetting one
+  <code>future.get()</code> silently leaks a thread. Forgetting <code>joinAll()</code>
+  here does not &mdash; <code>close()</code> performs the same failure check itself
+  and throws, so a task failure is never silently swallowed either.</p>
+
+  <h2>Failure policies</h2>
+  <pre><code>Concurrency.scope();                          // FailurePolicy.FAIL_FAST (default)
+Concurrency.scope(FailurePolicy.COLLECT_ALL); // wait for everything, report every failure</code></pre>
+  <p><strong>FAIL_FAST</strong> (default): the first task failure immediately
+  interrupts every other still-running task in the scope; <code>joinAll()</code>
+  throws <code>TaskFailedException</code> wrapping that first failure once every task
+  has actually finished.</p>
+  <pre><code>try (TaskScope scope = Concurrency.scope()) {
+    scope.fork(() -&gt; riskyCall());
+    scope.fork(() -&gt; anotherRiskyCall());
+    scope.joinAll(); // throws TaskFailedException if either failed
+} catch (TaskFailedException e) {
+    log.error("a task failed", e.getCause());
+}</code></pre>
+  <p><strong>COLLECT_ALL</strong>: no task is cancelled because another failed;
+  <code>joinAll()</code> waits for every task, then throws
+  <code>MultipleTaskFailuresException</code> listing every failure (in fork order) if
+  at least one failed.</p>
+  <pre><code>try (TaskScope scope = Concurrency.scope(FailurePolicy.COLLECT_ALL)) {
+    List&lt;Subtask&lt;Report&gt;&gt; reports = ids.stream().map(id -&gt; scope.fork(() -&gt; generate(id))).toList();
+    try {
+        scope.joinAll();
+    } catch (MultipleTaskFailuresException e) {
+        e.failures().forEach(f -&gt; log.warn("report generation failed", f));
+    }
+    List&lt;Report&gt; succeeded = reports.stream()
+            .filter(r -&gt; r.state() == Subtask.State.SUCCESS)
+            .map(Subtask::get)
+            .toList();
+}</code></pre>
+
+  <h2>Subtask states</h2>
+  <p>A <code>Subtask&lt;T&gt;</code> (returned by <code>fork()</code>) moves from
+  <code>RUNNING</code> to exactly one final state: <code>SUCCESS</code>,
+  <code>FAILED</code>, or <code>CANCELLED</code> (interrupted as a result of a
+  sibling's failure under <code>FAIL_FAST</code> &mdash; not counted as a failure by
+  <code>joinAll()</code>). <code>get()</code>/<code>exception()</code> are only
+  meaningful after the owning scope has joined.</p>
+
+  <h2>Pinning diagnostics</h2>
+  <p>While a scope has at least one forked task, it listens for
+  <code>jdk.VirtualThreadPinned</code> JFR events &mdash; zero configuration, no JVM
+  flags, no separate profiling run.</p>
+  <pre><code>TaskScope scope = Concurrency.scope();
+try {
+    scope.fork(() -&gt; riskyLegacyCodeThatMightStillUseSynchronized());
+    scope.joinAll();
+} finally {
+    scope.close(); // this is what flushes JFR's buffered events
+}
+scope.pinningEvents().forEach(e -&gt;
+        log.warn("virtual thread pinned for {} at {}", e.duration(), e.stackTraceSummary()));</code></pre>
+
+  <div class="card"><strong>JDK 24 changed what "pinning" means.</strong>
+  <a href="https://openjdk.org/jeps/491">JEP 491</a> (JDK 24) changed
+  <code>synchronized</code> so it generally no longer pins a blocked virtual thread at
+  all. The diagnostic mechanism here is unaffected by that change &mdash; it still
+  reports whatever pinning genuinely occurs (e.g. a blocking native/JNI call) &mdash;
+  but on JDK 24+ you should expect far fewer pinning events for code written assuming
+  <code>synchronized</code> pins. LitheJ's own test suite verifies both eras
+  explicitly rather than assuming one.</div>
+
+  <p><a href="async.html">&larr; Async</a> &middot;
+     <a href="config.html">Configuration &amp; Resources &rarr;</a></p>
+</main>
+</div>
+</body>
+</html>

@@ -6,7 +6,7 @@
 
   <groupId>io.github.mirfaizan06</groupId>
   <artifactId>lithej-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>LitheJ Parent</name>
@@ -157,6 +157,11 @@
       <dependency>
         <groupId>io.github.mirfaizan06</groupId>
         <artifactId>lithej-config</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.mirfaizan06</groupId>
+        <artifactId>lithej-concurrent</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
@@ -525,6 +530,29 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+
+    <!--
+      lithej-concurrent requires Java 21 (virtual threads, stable structured-use
+      APIs), a deliberate, documented exception to the rest of the library's
+      Java 17 baseline. Rather than raising the whole project's baseline, this
+      profile adds the module to the reactor only when building with JDK 21+,
+      so `./mvnw clean verify` under JDK 17 builds every other module exactly
+      as before (unaffected, still 17-baseline) and simply does not build this
+      one. CI's JDK 21 and JDK 25 matrix legs both satisfy this activation, so
+      the module gets fully compiled, tested, and quality-gated there. The
+      `lithej` aggregate artifact deliberately does NOT depend on this module,
+      so depending on the aggregate never forces a Java 21 requirement on
+      users who don't want it: lithej-concurrent is opt-in, its own artifact.
+    -->
+    <profile>
+      <id>jdk21-modules</id>
+      <activation>
+        <jdk>[21,)</jdk>
+      </activation>
+      <modules>
+        <module>lithej-concurrent</module>
+      </modules>
     </profile>
   </profiles>
 </project>

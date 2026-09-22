@@ -14,6 +14,34 @@ List<Integer> even = Lists.filter(numbers, n -> n % 2 == 0);
 List<String> lines = FileIO.readLines(Path.of("users.txt"));
 ```
 
+## New in 1.1: leak-proof structured concurrency
+
+Most of LitheJ is a thin, honest layer over JDK APIs that are already simple — on
+purpose (see [Design philosophy](#design-philosophy)). `lithej-concurrent` is
+different: it closes a real, current gap. The JDK's own structured-concurrency API
+(`StructuredTaskScope`) has stayed in preview through every release since virtual
+threads went stable in JDK 21, so there has been no *stable* way to get its actual
+benefit — making a leaked background thread structurally impossible instead of a
+code-review hope — without depending on an API that keeps changing shape. It also
+ships zero-configuration virtual-thread pinning diagnostics, something no other
+library packages this simply.
+
+```java
+try (TaskScope scope = Concurrency.scope()) {
+    Subtask<User> user   = scope.fork(() -> fetchUser(id));
+    Subtask<List<Order>> orders = scope.fork(() -> fetchOrders(id));
+
+    scope.joinAll(); // waits for both; first failure cancels the other
+
+    return new Profile(user.get(), orders.get());
+} // guarantee: no forked task can outlive this block. Ever. Not "usually."
+```
+
+Requires Java 21+ and is its own opt-in artifact (`lithej-concurrent`) — it does not
+raise the rest of the library's Java 17 baseline, and the `lithej` aggregate
+deliberately does not depend on it. See [Concurrent examples](#concurrent-examples)
+below.
+
 ## Why this exists
 
 Ordinary Java tasks — reading a validated integer from stdin, reading a UTF-8 file,
@@ -32,9 +60,11 @@ and reaches for `java.util.stream`, `java.time`, `java.net.http`, or
 
 ## Requirements
 
-- **Java 17 or newer.** LitheJ does not use any API newer than Java 17 in its main
-  source, so it runs unmodified on 17, 21, 25, and later.
-- No required runtime dependencies beyond the JDK for any core module.
+- **Java 17 or newer** for every module except `lithej-concurrent`, which needs
+  **Java 21+** (it uses virtual threads). LitheJ does not use any API newer than
+  Java 17 in its Java 17-baseline modules, so those run unmodified on 17, 21, 25, and
+  later.
+- No required runtime dependencies beyond the JDK for any module.
   `lithej-net`'s tests (not its runtime) depend on OkHttp's MockWebServer; the
   shipped `lithej-net` jar itself has zero runtime dependencies.
 
@@ -52,26 +82,39 @@ Depend on just what you need:
 <dependency>
     <groupId>io.github.mirfaizan06</groupId>
     <artifactId>lithej-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
-...or pull in every module with the aggregate artifact:
+...or pull in every Java 17-baseline module with the aggregate artifact:
 
 ```xml
 <dependency>
     <groupId>io.github.mirfaizan06</groupId>
     <artifactId>lithej</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
+</dependency>
+```
+
+`lithej-concurrent` (Java 21+, see [above](#new-in-11-leak-proof-structured-concurrency))
+is opt-in and not pulled in by the aggregate:
+
+```xml
+<dependency>
+    <groupId>io.github.mirfaizan06</groupId>
+    <artifactId>lithej-concurrent</artifactId>
+    <version>1.1.0</version>
 </dependency>
 ```
 
 ### Gradle (Kotlin DSL)
 
 ```kotlin
-implementation("io.github.mirfaizan06:lithej-core:1.0.0")
+implementation("io.github.mirfaizan06:lithej-core:1.1.0")
 // or
-implementation("io.github.mirfaizan06:lithej:1.0.0")
+implementation("io.github.mirfaizan06:lithej:1.1.0")
+// and/or, separately (Java 21+):
+implementation("io.github.mirfaizan06:lithej-concurrent:1.1.0")
 ```
 
 ### JitPack (fallback, no Maven Central account needed)
@@ -222,6 +265,53 @@ single request/response, build and pass in your own `java.net.http.HttpClient` v
 `HttpOptions.withClient(...)`, and reach the raw JDK response via
 `response.raw()` any time you need something LitheJ didn't wrap.
 
+## Concurrent examples
+
+Requires the separate `lithej-concurrent` artifact and Java 21+.
+
+```java
+try (TaskScope scope = Concurrency.scope()) {
+    Subtask<String> a = scope.fork(() -> callServiceA());
+    Subtask<String> b = scope.fork(() -> callServiceB());
+
+    scope.joinAll(); // waits for both; a failure in either cancels the other
+
+    combine(a.get(), b.get());
+} // guarantee: neither forked task can still be running once this line executes
+```
+
+Don't want the first failure to cancel everything? Collect every failure instead:
+
+```java
+try (TaskScope scope = Concurrency.scope(FailurePolicy.COLLECT_ALL)) {
+    List<Subtask<Report>> reports = ids.stream().map(id -> scope.fork(() -> generate(id))).toList();
+    try {
+        scope.joinAll();
+    } catch (MultipleTaskFailuresException e) {
+        e.failures().forEach(failure -> log.warn("report generation failed", failure));
+    }
+    List<Report> succeeded = reports.stream()
+            .filter(r -> r.state() == Subtask.State.SUCCESS)
+            .map(Subtask::get)
+            .toList();
+}
+```
+
+Zero-configuration pinning diagnostics — check `pinningEvents()` after `close()` has
+returned, since that's what flushes JFR's buffered events:
+
+```java
+TaskScope scope = Concurrency.scope();
+try {
+    scope.fork(() -> riskyLegacyCodeThatMightStillUseSynchronized());
+    scope.joinAll();
+} finally {
+    scope.close();
+}
+scope.pinningEvents().forEach(e ->
+        log.warn("virtual thread pinned for {} at {}", e.duration(), e.stackTraceSummary()));
+```
+
 ## Error handling
 
 Two complementary tools, used for different kinds of failure:
@@ -256,7 +346,8 @@ Result<String, Exception> attempt = Result.of(() -> Files.readString(path));
 | `lithej-net` | `lithej.net` | `Http`, `HttpOptions`, `HttpResponse` |
 | `lithej-async` | `lithej.async` | `Async` |
 | `lithej-config` | `lithej.config` | `Env`, `PropertiesX`, `Config` |
-| `lithej` | — | Aggregate: depends on every module above |
+| `lithej-concurrent` (Java 21+) | `lithej.concurrent` | `Concurrency`, `TaskScope`, `Subtask`, `FailurePolicy`, `PinningEvent` |
+| `lithej` | — | Aggregate: depends on every Java 17-baseline module above (not `lithej-concurrent` — opt in separately) |
 
 Each module has one job and (beyond `lithej-core`, which most others depend on) can
 be used independently. See the [documentation site](https://MirFaizan06.github.io/lithej/)
@@ -292,6 +383,10 @@ Every public class's Javadoc states its thread-safety explicitly. As a summary:
 - `ConsoleIO` (and, transitively, `Console`, which wraps one shared instance bound to
   `System.in`/`System.out`) is **not** thread-safe for concurrent reads — a console
   session is inherently single-reader.
+- `TaskScope` allows `fork()` from multiple threads, but `joinAll()`/`close()` are
+  meant to be called once each, from the thread that created the scope, after forking
+  is done — see its Javadoc for the exact contract. `Subtask` is safe to read from any
+  thread once the owning scope has joined.
 
 ## Version compatibility
 
