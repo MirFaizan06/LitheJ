@@ -61,7 +61,14 @@ class ProcessXTest {
                 ProcessOptions.defaults().withWorkingDirectory(tempDir));
 
         assertThat(result.succeeded()).isTrue();
-        assertThat(result.stdout().trim()).isEqualTo(tempDir.toRealPath().toString());
+        // Compare canonicalized (toRealPath) forms on both sides, not raw strings: on
+        // Windows, a spawned process can report its cwd using the legacy 8.3 short
+        // path form (e.g. "RUNNER~1" for a long account name like "runneradmin" on
+        // GitHub's hosted runners) even though it is the exact same directory as the
+        // long-form path JUnit's @TempDir gives us. Canonicalizing both sides avoids a
+        // false failure from that harmless textual difference.
+        Path reportedCwd = Path.of(result.stdout().trim());
+        assertThat(reportedCwd.toRealPath()).isEqualTo(tempDir.toRealPath());
     }
 
     @Test
