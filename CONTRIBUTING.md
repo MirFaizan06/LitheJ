@@ -139,26 +139,26 @@ Central Publishing Portal); the steps below were re-verified against
 <https://central.sonatype.org/publish/publish-portal-maven/> on 2026-09-22. **Re-verify
 before your next release if it's been a while**, since this can change.
 
-**Status for this project:** namespace/token — not yet done (see below). GPG
-signing — done; see the next section.
+**Status for this project:** done. Namespace `io.github.mirfaizan06` verified via a
+temporary repo at `github.com/MirFaizan06/nvpxpnnjuf` (verification key
+`nvpxpnnjuf`, created 2026-09-22, delete it once Sonatype confirms verification —
+it's no longer needed after that). `CENTRAL_TOKEN_USERNAME`/`CENTRAL_TOKEN_PASSWORD`
+are set as repository secrets (user token created 2026-09-22). GPG signing — done;
+see the next section.
+
+For future reference, or if the token needs rotating:
 
 1. Sign in at <https://central.sonatype.com/> with the GitHub account that owns this
-   repository. **If you signed up via GitHub, the `io.github.MirFaizan06` namespace
-   is very likely already auto-verified** — Sonatype grants `io.github.<your GitHub
-   username>` automatically for GitHub-based signups. Check first: account menu →
-   **View Namespaces**. If it's already listed as verified, skip to step 2.
-   Otherwise, click "Add Namespace", enter `io.github.MirFaizan06`, and follow the
-   in-portal instructions to create a short-lived verification repository (it can be
-   deleted once Sonatype confirms it). If neither works, email
-   central-support@sonatype.com.
+   repository. Namespace status: account menu → **View Namespaces**.
 2. Generate a **user token** (account menu → **Generate User Token**) — this gives
    you a username/password pair used by the publishing plugin, distinct from your
-   login password. This step requires being logged into the portal, so only you can
-   do it.
-3. Add these repository secrets in **GitHub → Settings → Secrets and variables →
-   Actions → New repository secret** (or ask an assistant with a GitHub token that
-   has secrets-write access on this repo to add them, the same way the GPG secrets
-   below were added — without ever putting the raw token in chat/commit history):
+   login password. This step requires being logged into the portal, so only the
+   repository owner can do it. Give the token a sensible expiry (avoid "does not
+   expire") and note the expiry date somewhere you'll actually see it before it
+   lapses, since a lapsed token will make `release.yml`'s publish step fail
+   authentication until it's regenerated.
+3. Add/update these repository secrets in **GitHub → Settings → Secrets and
+   variables → Actions**:
    - `CENTRAL_TOKEN_USERNAME` — the generated token's username
    - `CENTRAL_TOKEN_PASSWORD` — the generated token's password
 4. `release.yml` wires these into a generated `settings.xml` `<server>` block (via
