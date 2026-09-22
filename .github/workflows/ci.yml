@@ -39,9 +39,25 @@ jobs:
         if: runner.os != 'Windows'
         run: chmod +x ./mvnw
 
-      - name: Build and verify (tests, Checkstyle, SpotBugs, PMD, JaCoCo, Javadoc)
+      # SpotBugs and PMD are both bytecode/JVM-hosted analysis tools; as of the
+      # SpotBugs 4.9.3 / PMD 7.7.0 releases pinned in the root pom, neither can
+      # run ON a JDK 25 JVM yet (SpotBugs's bundled ASM rejects JDK 25's own
+      # runtime classes with "Unsupported class file major version 69"; PMD's
+      # parser fails similarly). This is independent of the code LitheJ ships,
+      # which was verified by hand to compile and pass its full test suite
+      # under JDK 25 — see CONTRIBUTING.md. Checkstyle, JaCoCo, and Javadoc all
+      # work fine on JDK 25, so only SpotBugs/PMD are skipped here. Re-check
+      # this exclusion whenever spotbugs-maven-plugin/pmd-plugin are upgraded;
+      # remove it once both tools support running on JDK 25.
+      - name: Build and verify
         shell: bash
-        run: ./mvnw --batch-mode --no-transfer-progress clean verify
+        run: |
+          if [ "${{ matrix.java }}" = "25" ]; then
+            echo "::notice::JDK 25: running full verify minus SpotBugs/PMD (see workflow comment)"
+            ./mvnw --batch-mode --no-transfer-progress clean verify -Dspotbugs.skip=true -Dpmd.skip=true
+          else
+            ./mvnw --batch-mode --no-transfer-progress clean verify
+          fi
 
       - name: Upload surefire reports on failure
         if: failure()

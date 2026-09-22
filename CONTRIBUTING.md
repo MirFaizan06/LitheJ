@@ -79,6 +79,30 @@ hand too:
   number — if you genuinely can't cover a branch meaningfully, say so in the PR
   description rather than padding coverage.
 
+## Known tooling limitation: SpotBugs/PMD on JDK 25
+
+LitheJ's own source and tests are fully JDK 25-compatible — this was verified by
+hand (compiling and running the complete test suite under a real Temurin 25 JVM, not
+just assumed from the `maven.compiler.release=17` setting). However, two of the
+static-analysis tools this project wires into `./mvnw verify` are not yet able to
+*run on* a JDK 25 JVM as of the versions pinned in the root `pom.xml`
+(`spotbugs-maven-plugin` 4.9.3.0, `pmd-plugin` 3.26.0 / PMD 7.7.0): both fail with
+`Unsupported class file major version 69` / a parser error while trying to resolve
+JDK 25's own runtime classes. This is a limitation of those tools, not of LitheJ's
+code — Checkstyle, JaCoCo, and Javadoc generation all work correctly on JDK 25.
+
+Practical effect: `./mvnw clean verify` run under a JDK 25 JVM will fail at the
+SpotBugs or PMD step. CI works around this (see `.github/workflows/ci.yml`) by
+skipping SpotBugs/PMD specifically when the matrix JDK is 25
+(`-Dspotbugs.skip=true -Dpmd.skip=true`), while still running the full test suite,
+Checkstyle, JaCoCo, and Javadoc on 25. If you're developing locally on JDK 25, use
+the same flags, or develop against JDK 17/21 (both fully supported by every tool)
+and only use JDK 25 to spot-check runtime behavior.
+
+Re-check this whenever bumping `spotbugs-maven-plugin.version` or
+`pmd-plugin.version` — remove the workaround once both tools officially support
+running on JDK 25.
+
 ## Static analysis configuration
 
 Checkstyle (`config/checkstyle/checkstyle.xml`), SpotBugs
