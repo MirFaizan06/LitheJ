@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+    <artifactId>lithej-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>lithej-net</artifactId>
+  <packaging>jar</packaging>
+  <name>LitheJ Net</name>
+  <description>Ergonomic wrapper around java.net.http.HttpClient for common GET/POST/PUT/DELETE calls, with full access to the underlying JDK types.</description>
+
+  <properties>
+    <automatic.module.name>lithej.net</automatic.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+      <artifactId>lithej-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>mockwebserver</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

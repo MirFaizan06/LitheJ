@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+    <artifactId>lithej-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>lithej-time</artifactId>
+  <packaging>jar</packaging>
+  <name>LitheJ Time</name>
+  <description>Small conveniences built directly on java.time: parsing, formatting, comparisons and durations. Not a replacement for java.time.</description>
+
+  <properties>
+    <automatic.module.name>lithej.time</automatic.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+      <artifactId>lithej-core</artifactId>
+    </dependency>
+  </dependencies>
+</project>
