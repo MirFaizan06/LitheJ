@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    Deliberately NOT part of the main reactor (root pom.xml's <modules>), and does
+    NOT inherit from lithej-parent. These examples consume LitheJ the exact same way
+    an external user would: as a regular dependency with published coordinates,
+    resolved from the local Maven repository. Run `./mvnw install` from the repo
+    root first so these coordinates are available locally.
+  -->
+  <groupId>io.github.YOUR_GITHUB_USERNAME.lithej-examples</groupId>
+  <artifactId>lithej-examples-parent</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>LitheJ Examples</name>
+  <description>Small runnable programs demonstrating each LitheJ module, consumed as an external dependency.</description>
+
+  <modules>
+    <module>console-example</module>
+    <module>files-example</module>
+    <module>collections-example</module>
+    <module>http-example</module>
+    <module>config-example</module>
+    <module>async-example</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+    <lithej.version>1.0.0-SNAPSHOT</lithej.version>
+    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+    <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+  </properties>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <release>${maven.compiler.release}</release>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven-jar-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

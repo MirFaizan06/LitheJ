@@ -78,7 +78,7 @@ jobs:
         run: chmod +x ./mvnw
 
       - name: Install library modules to the local repository
-        run: ./mvnw --batch-mode --no-transfer-progress -DskipTests -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dpmd.skip=true install
+        run: ./mvnw --batch-mode --no-transfer-progress -DskipTests -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dpmd.skip=true -Djacoco.skip=true install
 
       - name: Build examples
         run: ./mvnw --batch-mode --no-transfer-progress -f examples/pom.xml verify

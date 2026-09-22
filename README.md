@@ -1,0 +1,312 @@
+# LitheJ
+
+LitheJ is a small, dependency-free Java library that makes common, repetitive Java
+tasks — console input, file I/O, collection transformations, text processing, HTTP
+calls, config loading — shorter and safer to write, without hiding how Java works or
+locking you into a proprietary framework.
+
+```java
+int age = Console.askInt("Enter age: ");
+
+List<Integer> numbers = Lists.of(1, 2, 3, 4, 5);
+List<Integer> even = Lists.filter(numbers, n -> n % 2 == 0);
+
+List<String> lines = FileIO.readLines(Path.of("users.txt"));
+```
+
+## Why this exists
+
+Ordinary Java tasks — reading a validated integer from stdin, reading a UTF-8 file,
+filtering a list, joining strings — take more boilerplate than they should, and that
+boilerplate is exactly where small bugs (wrong charset, forgotten resource close,
+off-by-one loop) creep in. LitheJ wraps these tasks in a small, consistent API built
+entirely on top of the JDK: every method accepts and returns standard types
+(`List`, `Map`, `Path`, `Optional`, `Duration`, `CompletableFuture`, ...), so you can
+mix LitheJ calls with plain Java freely, drop back to the JDK API at any point, and
+never wonder what a LitheJ method is hiding from you.
+
+LitheJ is **not** a competing collections framework, date/time library, HTTP client,
+or async runtime — each module is a thin, honest layer over the matching JDK API,
+and reaches for `java.util.stream`, `java.time`, `java.net.http`, or
+`java.util.concurrent` directly wherever that's already simple enough.
+
+## Requirements
+
+- **Java 17 or newer.** LitheJ does not use any API newer than Java 17 in its main
+  source, so it runs unmodified on 17, 21, 25, and later.
+- No required runtime dependencies beyond the JDK for any core module.
+  `lithej-net`'s tests (not its runtime) depend on OkHttp's MockWebServer; the
+  shipped `lithej-net` jar itself has zero runtime dependencies.
+
+## Installation
+
+Coordinates below use the placeholder groupId `io.github.YOUR_GITHUB_USERNAME` —
+replace it with the actual published groupId once you know it (see
+[CONTRIBUTING.md](CONTRIBUTING.md) for the Maven Central / JitPack setup that
+determines this).
+
+### Maven
+
+Depend on just what you need:
+
+```xml
+<dependency>
+    <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+    <artifactId>lithej-core</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+...or pull in every module with the aggregate artifact:
+
+```xml
+<dependency>
+    <groupId>io.github.YOUR_GITHUB_USERNAME</groupId>
+    <artifactId>lithej</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### Gradle (Kotlin DSL)
+
+```kotlin
+implementation("io.github.YOUR_GITHUB_USERNAME:lithej-core:1.0.0")
+// or
+implementation("io.github.YOUR_GITHUB_USERNAME:lithej:1.0.0")
+```
+
+### JitPack (fallback, no Maven Central account needed)
+
+If you'd rather not wait on a Central publish, every tagged release is also
+installable via [JitPack](https://jitpack.io):
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+<dependency>
+    <groupId>com.github.YOUR_GITHUB_USERNAME</groupId>
+    <artifactId>lithej</artifactId>
+    <version>v1.0.0</version>
+</dependency>
+```
+
+```kotlin
+repositories {
+    maven("https://jitpack.io")
+}
+dependencies {
+    implementation("com.github.YOUR_GITHUB_USERNAME:lithej:v1.0.0")
+}
+```
+
+No installer, no code generation, no annotation processor, no framework
+bootstrapping — add the dependency and start calling static methods.
+
+## Quick start
+
+```java
+import lithej.console.Console;
+import lithej.collections.Lists;
+import lithej.io.FileIO;
+import java.nio.file.Path;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        String name = Console.ask("What's your name? ");
+        Console.println("Hello, " + name + "!");
+
+        List<Integer> numbers = Lists.of(1, 2, 3, 4, 5, 6);
+        List<Integer> even = Lists.filter(numbers, n -> n % 2 == 0);
+        Console.println("Even numbers: " + even);
+
+        FileIO.write(Path.of("greeting.txt"), "Hello, " + name + "!\n");
+    }
+}
+```
+
+## Console examples
+
+```java
+int age = Console.askInt("Enter age: ");                 // retries until a valid int
+boolean sure = Console.confirm("Proceed?");               // "Proceed? (y/n): "
+String color = Console.choose("Pick a color:",
+        List.of("red", "green", "blue"));                 // numbered menu, validated
+String password = Console.readPassword("Password: ");     // masked when a real console is attached
+```
+
+`Console` is a static facade over `System.in`/`System.out`, convenient for scripts.
+For anything you want to unit test, construct a `ConsoleIO` over your own streams
+instead — it has the exact same methods, but reads/writes the streams you give it:
+
+```java
+var in = new ByteArrayInputStream("42\n".getBytes(UTF_8));
+var out = new ByteArrayOutputStream();
+ConsoleIO console = new ConsoleIO(in, new PrintStream(out, true, UTF_8));
+
+int age = console.askInt("Enter age: ");
+assertEquals(42, age);
+```
+
+## Files examples
+
+```java
+String text = FileIO.read(path);                    // UTF-8, whole file
+List<String> lines = FileIO.readLines(path);
+FileIO.write(path, "content");                       // creates parent dirs, overwrites
+FileIO.append(path, "more content\n");
+FileIO.copy(source, target);                         // refuses to overwrite by default
+FileIO.copy(source, target, true);                   // explicit opt-in to overwrite
+FileIO.writeAtomic(path, "content");                 // write-to-temp-then-move
+
+Directories.ensureExists(dir);
+List<Path> files = FileIO.walk(dir);                 // recursive, regular files only
+Directories.deleteRecursive(dir);                    // explicit, destructive, documented
+
+String config = Resources.read("config/defaults.properties"); // classpath, works inside a JAR
+```
+
+## Collections examples
+
+```java
+List<Integer> numbers = Lists.of(1, 2, 3, 4, 5, 6, 7, 8);
+
+List<Integer> even = Lists.filter(numbers, n -> n % 2 == 0);
+List<List<Integer>> chunks = Lists.chunk(numbers, 3);            // [[1,2,3],[4,5,6],[7,8]]
+Map<Boolean, List<Integer>> split = Lists.partition(numbers, n -> n > 4);
+Map<String, List<Integer>> byParity = Lists.groupBy(numbers, n -> n % 2 == 0 ? "even" : "odd");
+Optional<Integer> max = Lists.maxBy(numbers, Comparator.naturalOrder());
+
+Map<String, Integer> scores = Map.of("alice", 90, "bob", 75);
+Map<Integer, String> byScore = Maps.invert(scores);              // throws on duplicate values
+Map<String, Integer> passing = Maps.filterValues(scores, v -> v >= 80);
+
+Set<Integer> a = Sets.of(1, 2, 3);
+Set<Integer> b = Sets.of(2, 3, 4);
+Set<Integer> shared = Sets.intersection(a, b);                   // {2, 3}
+```
+
+## Text examples
+
+```java
+Text.isBlank("   ");                       // true
+Text.words("  hello   world  ");           // ["hello", "world"]
+Text.titleCase("hello world");             // "Hello World"
+Text.truncate("hello world", 5);           // "hello"
+Text.ellipsis("hello world", 8);           // "hello..."
+Text.padLeft("7", 3, '0');                 // "007"
+Text.between("<a>value</a>", "<a>", "</a>"); // Optional["value"]
+```
+
+## HTTP examples
+
+```java
+HttpResponse response = Http.get("https://api.example.com/users/1");
+if (response.isSuccessful()) {
+    String body = response.body();
+}
+
+HttpOptions options = HttpOptions.defaults()
+        .withHeader("Authorization", "Bearer " + token)
+        .withQueryParam("verbose", "true")
+        .withTimeout(Duration.ofSeconds(10));
+
+HttpResponse created = Http.post("https://api.example.com/users", "{\"name\":\"Ada\"}", options);
+```
+
+`Http` never invents retries, cookie jars, or auth flows — for anything beyond a
+single request/response, build and pass in your own `java.net.http.HttpClient` via
+`HttpOptions.withClient(...)`, and reach the raw JDK response via
+`response.raw()` any time you need something LitheJ didn't wrap.
+
+## Error handling
+
+Two complementary tools, used for different kinds of failure:
+
+**Exceptions** (mostly unchecked, always documented) for genuine failures — a missing
+file, a malformed number, a network error. Every method's Javadoc states exactly what
+it throws.
+
+**`Result<T, E>`** for expected, recoverable outcomes you want to handle without
+exceptions:
+
+```java
+OptionalInt parsedInt = Numbers.tryInt(input);
+Result<Integer, String> parsed = parsedInt.isPresent()
+        ? Result.success(parsedInt.getAsInt())
+        : Result.failure("not a number: " + input);
+
+int value = parsed.orElse(0);
+parsed.ifFailure(error -> Console.println("Warning: " + error));
+
+Result<String, Exception> attempt = Result.of(() -> Files.readString(path));
+```
+
+## API modules
+
+| Module | Package(s) | Contents |
+|---|---|---|
+| `lithej-core` | `lithej.core`, `lithej.text`, `lithej.console` | `ObjectsX`, `Validate`, `Result`, `Numbers`, `Text`, `Console`/`ConsoleIO` |
+| `lithej-collections` | `lithej.collections` | `Lists`, `Maps`, `Sets`, `Iterables` |
+| `lithej-io` | `lithej.io`, `lithej.process` | `FileIO`, `Directories`, `Resources`, `ProcessX` |
+| `lithej-time` | `lithej.time` | `Times` |
+| `lithej-net` | `lithej.net` | `Http`, `HttpOptions`, `HttpResponse` |
+| `lithej-async` | `lithej.async` | `Async` |
+| `lithej-config` | `lithej.config` | `Env`, `PropertiesX`, `Config` |
+| `lithej` | — | Aggregate: depends on every module above |
+
+Each module has one job and (beyond `lithej-core`, which most others depend on) can
+be used independently. See the [documentation site](https://YOUR_GITHUB_USERNAME.github.io/lithej/)
+for the full guide and generated API reference for every class.
+
+## Design philosophy
+
+**Simple by default, powerful when needed.** A helper is added only when it makes
+code meaningfully more readable, safer, or less error-prone than the equivalent
+plain-Java code — not merely shorter. Where the JDK's own API is already simple, we
+don't wrap it.
+
+- **Predictable.** A method's name should tell you what it does; nothing here does
+  something surprising you'd need to read the source to discover.
+- **Minimal dependencies.** Every core module depends on nothing but the JDK.
+- **Standard types in, standard types out.** You are never handed a LitheJ-specific
+  collection, date/time, or HTTP type you can't pass straight into other Java code.
+- **Explicit failure semantics.** Every method's Javadoc states its null behavior and
+  what it throws. Destructive operations (`Directories.deleteRecursive`,
+  `Directories.empty`) have names that say so.
+- **No unbounded resource use.** Nothing here silently spawns unlimited threads,
+  retries forever, or reads unbounded input by default.
+
+## Thread-safety notes
+
+Every public class's Javadoc states its thread-safety explicitly. As a summary:
+
+- Stateless utility classes (`Text`, `Numbers`, `Validate`, `ObjectsX`, `Lists`,
+  `Maps`, `Sets`, `Iterables`, `FileIO`, `Directories`, `Resources`, `Times`, `Http`,
+  `Async`, `Env`, `PropertiesX`) are thread-safe — they hold no mutable state.
+- Immutable value types (`Result`, `HttpOptions`, `ProcessOptions`, `HttpResponse`,
+  `Config`) are thread-safe to share and reuse across threads.
+- `ConsoleIO` (and, transitively, `Console`, which wraps one shared instance bound to
+  `System.in`/`System.out`) is **not** thread-safe for concurrent reads — a console
+  session is inherently single-reader.
+
+## Version compatibility
+
+LitheJ follows [Semantic Versioning](https://semver.org/). Before `1.0.0`, minor
+versions may include breaking changes. From `1.0.0` onward, only major version bumps
+break public API compatibility; this is checked automatically in CI via
+[Revapi](https://revapi.org/) once a `1.0.0` baseline exists. See
+[CHANGELOG.md](CHANGELOG.md) for release history.
+
+## Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for build
+instructions, coding conventions, and the release process.
+
+## License
+
+LitheJ is licensed under the [Apache License, Version 2.0](LICENSE).
